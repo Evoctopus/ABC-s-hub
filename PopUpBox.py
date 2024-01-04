@@ -6,7 +6,7 @@ from typing import *
 from Settings import *
 
 class DialogBox:
-    def __init__(self, window, npc,
+    def __init__(self, window, npc, 
                  fontSize: int = DialogSettings.textSize, 
                  fontColor: Tuple[int, int, int] = (255, 255, 255), 
                  bgColor: Tuple[int, int, int, int] = (0, 0, 0, 150)):

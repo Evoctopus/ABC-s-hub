@@ -200,4 +200,3 @@ class WeaponSettings:
     weaponwidth = 70
     weaponheight = 40
     weaponatk = [10, 5]
-    weaponas = [0, 20]

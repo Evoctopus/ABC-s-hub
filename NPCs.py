@@ -20,8 +20,6 @@ class NPC(pygame.sprite.Sprite, Collidable):
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.window = window
-        self.npc_group.add(self)
-        self.tag = 'npc'
 
         self.name = name
         self.namefont = pygame.font.Font(None, NPCSettings.Fontsize)
@@ -78,39 +76,33 @@ class ShopNPC(NPC):
     
 
 class Monster(NPC):
-    def __init__(self, x, y, name, path, window, weaponindex, HP = 50, Attack = 3, Defence = 1, Money = 15):
+    def __init__(self, x, y, name, path, window, weaponindex, HP = 10, Attack = 3, Defence = 1, Money = 15):
         super().__init__(x, y, name, path, window)
         self.atk = Attack
-        self.tag = 'monster'
         self.defence = Defence
         self.money = Money
         self.hp = HP
-        self.blood_k = 60 / HP
         self.speed = 3
         self.dx = 0 
         self.dy = 0
         self.weapon = Weapon(self.window, weaponindex, self)
-        self.monster_group.add(self)
-        self.startattack = False
         
 
     def attack(self, player):
         self.dx, self.dy =  (player.rect.centerx - self.rect.centerx) / self.dis * self.speed, (player.rect.centery - self.rect.centery) / self.dis * self.speed
-        if (self.dis <= 90):
+        if (self.dis <= 60):
             self.dx = 0
             self.dy = 0
-            self.startattack = True
-        else:
-            self.startattack = False
-
+            if self.weapon.attacking:
+                self.weapon.attacking = False
+            self.weapon.attacking = True
             
     def update(self, player):
 
         self.dis = math.hypot(player.rect.centerx - self.rect.centerx, player.rect.centery - self.rect.centery)
-
         if (self.dis <= MonsterSettings.DetectingRange):
             self.attack(player)
-        if player.rect.centerx < self.rect.centerx: 
+        if self.dx < 0: 
             self.dir = -1
             self.image = self.image_left
         elif self.dx > 0:
@@ -120,9 +112,8 @@ class Monster(NPC):
         self.rect = self.rect.move(self.dx, self.dy)
 
     def draw(self, dx=0, dy=0):
-        self.window.blit(self.namerender, (self.rect.x + NPCSettings.npcWidth // 2 - len(self.name) * 2 , self.rect.y - NPCSettings.Fontsize - 10))
+        self.window.blit(self.namerender, (self.rect.x + NPCSettings.npcWidth // 2 - len(self.name) * 2 , self.rect.y - NPCSettings.Fontsize))
         self.window.blit(self.image, self.rect)
-        pygame.draw.rect(self.window, [255, 0, 0], [self.rect.x, self.rect.y - 10, self.hp*self.blood_k, 10], 0)
         self.weapon.draw()    
 
     #def draw(self, window, dx=0, dy=0):

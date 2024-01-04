@@ -21,7 +21,7 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.blood_k = 60 / 100
         self.speed = 5
         self.tag = 'player'
-        self.player.add(self)
+        
 
         self.vert = 10
         self.acceleration = -2   #跳跃的相关变量
@@ -95,7 +95,6 @@ class Player(pygame.sprite.Sprite, Collidable):
         if self.dir == -1:
             self.image = pygame.transform.flip(self.image, True, False)
 
-            
             ##if pygame.sprite.spritecollide(self, scene.obstacles, False):
                 # 遇到障碍物，取消移动
                # self.rect = self.rect.move(-dx, -dy)
