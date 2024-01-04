@@ -17,16 +17,19 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
         self.weapon = None
-        self.HP = 100
+        self.hp = 100
+        self.blood_k = 60 / 100
         self.speed = 5
+        self.tag = 'player'
+        self.player.add(self)
 
         self.vert = 10
         self.acceleration = -2   #跳跃的相关变量
 
         self.dir = 1
-        self.last_dir = 1
         self.is_talking = False
         self.is_jumping = True
+        self.startattack = False
         self.window = window
 
     def attr_update(self, addCoins = 0, addHP = 0, addAttack = 0, addDefence = 0):
@@ -47,7 +50,6 @@ class Player(pygame.sprite.Sprite, Collidable):
     def update(self, key):
 
         self.weapon = Weapon(self.window, 0, self)
-        self.last_dir = self.dir
         if key[pygame.K_d] or key[pygame.K_w] or key[pygame.K_a] or key[pygame.K_s]:
             self.index = (self.index + 1) % len(self.images)
             self.image = self.images[self.index]
@@ -70,7 +72,9 @@ class Player(pygame.sprite.Sprite, Collidable):
                     self.is_jumping = False 
             
             if key[pygame.K_j]:
-                self.weapon.attacking = True
+                self.startattack = True
+            else:
+                self.startattack = False
 
             if key[pygame.K_w] and self.rect.top > 0 :
                 dy -= self.speed
@@ -100,4 +104,5 @@ class Player(pygame.sprite.Sprite, Collidable):
             
     def draw(self):
         self.window.blit(self.image, self.rect)
+        pygame.draw.rect(self.window, [255, 0, 0], [self.rect.x, self.rect.y - 10, self.hp*self.blood_k, 10], 0)
         self.weapon.draw()

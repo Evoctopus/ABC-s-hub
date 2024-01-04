@@ -1,3 +1,5 @@
 import pygame
 
-sprite1 = pygame.sprite()
+
+
+print(1 != 2)
