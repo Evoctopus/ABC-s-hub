@@ -8,7 +8,7 @@ from Weapon import *
 import math
 
 class NPC(pygame.sprite.Sprite, Collidable):
-    def __init__(self, x, y, name, path, window):
+    def __init__(self, x, y, name, path, window, hp):
         # Initialize father classes
         pygame.sprite.Sprite.__init__(self)
         Collidable.__init__(self)
@@ -19,7 +19,10 @@ class NPC(pygame.sprite.Sprite, Collidable):
         self.image = self.image_right
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+        self.hp = hp
+        self.coord = 60 / hp
         self.window = window
+        self.tag = 'npc'
 
         self.name = name
         self.namefont = pygame.font.Font(None, NPCSettings.Fontsize)
@@ -76,33 +79,39 @@ class ShopNPC(NPC):
     
 
 class Monster(NPC):
-    def __init__(self, x, y, name, path, window, weaponindex, HP = 10, Attack = 3, Defence = 1, Money = 15):
-        super().__init__(x, y, name, path, window)
+    def __init__(self, x, y, name, path, window, weaponindex, hp, Attack = 3, Defence = 1, Money = 15):
+        super().__init__(x, y, name, path, window, hp)
         self.atk = Attack
         self.defence = Defence
         self.money = Money
-        self.hp = HP
         self.speed = 3
         self.dx = 0 
         self.dy = 0
-        self.weapon = Weapon(self.window, weaponindex, self)
+        self.hp_coord = 60 / hp
+        self.weapon = Sword(self.window, self)
+        self.startattack = False
+        self.skill = None
+        self.tag = 'monster'
         
 
     def attack(self, player):
         self.dx, self.dy =  (player.rect.centerx - self.rect.centerx) / self.dis * self.speed, (player.rect.centery - self.rect.centery) / self.dis * self.speed
-        if (self.dis <= 60):
+        if (self.dis <= 70 or self.weapon.cooling):
             self.dx = 0
             self.dy = 0
-            if self.weapon.attacking:
-                self.weapon.attacking = False
-            self.weapon.attacking = True
+            if not self.weapon.cooling:
+                self.skill = 'cut'
+                self.startattack = True
+            else: self.startattack = False
+        else:
+            self.startattack = False
             
     def update(self, player):
 
         self.dis = math.hypot(player.rect.centerx - self.rect.centerx, player.rect.centery - self.rect.centery)
         if (self.dis <= MonsterSettings.DetectingRange):
             self.attack(player)
-        if self.dx < 0: 
+        if player.rect.centerx < self.rect.centerx: 
             self.dir = -1
             self.image = self.image_left
         elif self.dx > 0:
@@ -112,8 +121,9 @@ class Monster(NPC):
         self.rect = self.rect.move(self.dx, self.dy)
 
     def draw(self, dx=0, dy=0):
-        self.window.blit(self.namerender, (self.rect.x + NPCSettings.npcWidth // 2 - len(self.name) * 2 , self.rect.y - NPCSettings.Fontsize))
+        self.window.blit(self.namerender, (self.rect.x + NPCSettings.npcWidth // 2 - len(self.name) * 2 , self.rect.y - NPCSettings.Fontsize - 10))
         self.window.blit(self.image, self.rect)
+        pygame.draw.rect(self.window, (255, 0, 0), [self.rect.x, self.rect.y - 10, self.hp*self.hp_coord, 10], 0)
         self.weapon.draw()    
 
     #def draw(self, window, dx=0, dy=0):

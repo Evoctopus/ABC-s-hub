@@ -13,24 +13,26 @@ class Player(pygame.sprite.Sprite, Collidable):
         Collidable.__init__(self)
         self.images = [pygame.transform.scale(pygame.image.load(img), 
                             (PlayerSettings.playerWidth, PlayerSettings.playerHeight)) for img in GamePath.player]
+        self.window = window
         self.index = 0
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
         self.weapon = None
         self.hp = 100
-        self.blood_k = 60 / 100
+        self.hp_coord = 60 / self.hp
         self.speed = 5
         self.tag = 'player'
         
-
         self.vert = 10
         self.acceleration = -2   #跳跃的相关变量
 
         self.dir = 1
         self.is_talking = False
-        self.is_jumping = True
+        self.is_jumping = False
         self.startattack = False
-        self.window = window
+        self.skill = None
+        
+        self.weapon = Sword(self.window, self)
 
     def attr_update(self, addCoins = 0, addHP = 0, addAttack = 0, addDefence = 0):
         ##### Your Code Here ↓ #####
@@ -49,7 +51,7 @@ class Player(pygame.sprite.Sprite, Collidable):
 
     def update(self, key):
 
-        self.weapon = Weapon(self.window, 0, self)
+        
         if key[pygame.K_d] or key[pygame.K_w] or key[pygame.K_a] or key[pygame.K_s]:
             self.index = (self.index + 1) % len(self.images)
             self.image = self.images[self.index]
@@ -72,6 +74,7 @@ class Player(pygame.sprite.Sprite, Collidable):
                     self.is_jumping = False 
             
             if key[pygame.K_j]:
+                self.skill = 'cut'
                 self.startattack = True
             else:
                 self.startattack = False
@@ -103,5 +106,5 @@ class Player(pygame.sprite.Sprite, Collidable):
             
     def draw(self):
         self.window.blit(self.image, self.rect)
-        pygame.draw.rect(self.window, [255, 0, 0], [self.rect.x, self.rect.y - 10, self.hp*self.blood_k, 10], 0)
+        pygame.draw.rect(self.window, (255, 0, 0), [self.rect.x, self.rect.y - 10, self.hp*self.hp_coord, 10], 0)
         self.weapon.draw()

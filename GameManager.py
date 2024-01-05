@@ -15,8 +15,8 @@ class GameManager:
         
         self.window = pygame.display.set_mode((WindowSettings.width, WindowSettings.height))
         self.player = Player(self.window)
-        self.npc = NPC(NPCSettings.npcstartx, NPCSettings.npcstarty, 'maqix', GamePath.npc, window=self.window)
-        self.monster = Monster(MonsterSettings.coordx, MonsterSettings.coordy, 'knight', GamePath.monster, window=self.window, weaponindex=1)
+        self.npc = NPC(NPCSettings.npcstartx, NPCSettings.npcstarty, 'maqix', GamePath.npc, window=self.window, hp=10)
+        self.monster = Monster(MonsterSettings.coordx, MonsterSettings.coordy, 'knight', GamePath.monster, window=self.window, weaponindex=1, hp=50)
         
         self.gamestate = GameState.GAME_PLAY_WILD
         self.wild_scene = WildScene(self.window)

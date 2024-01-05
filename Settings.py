@@ -123,8 +123,7 @@ class GamePath:
     monster = r".\assets\npc\monster\1.png"
     boss = r".\assets\npc\boss.png"
 
-    weapon = [r".\assets\weapon\weapon1.png",
-              r".\assets\weapon\weapon2.png"]
+    Sword1 = [f"./assets/weapon/Sword1/sword1-{i}.png" for i in range(1, 7)]
 
     groundTiles = [
         r".\assets\tiles\ground1.png", 
@@ -197,6 +196,21 @@ class MonsterSettings:
     DetectingRange = 500
 
 class WeaponSettings:
-    weaponwidth = 70
-    weaponheight = 40
+    weaponwidth = [65, 60]
+    weaponheight = [55, 50]
     weaponatk = [10, 5]
+    weaponas = [2, 2]
+
+class SwordSettings:
+    cooldown = 10
+    skillmsg = {'cut': 6 , 'longcut': 8, 'spin': 20, 'disappear': 20, 'stab': 8}
+    AS = 2
+
+class SwordPath:
+    cut = [f"./assets/weapon/Sword-cut/sword-{i}.png" for i in range(1, 7)]
+    longcut = [f"./assets/weapon/Sword-longcut/sword-{i}.png" for i in range(1, 9)]
+    spin = [f"./assets/weapon/Sword-spin/sword-{i}.png" for i in range(1, 21)]
+    stab = [f"./assets/weapon/Sword-stab/sword-{i}.png" for i in range(1, 9)]
+    disappear = [f"./assets/weapon/Sword-disappear/sword-{i}.png" for i in range(1, 21)]
+    
+
