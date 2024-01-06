@@ -15,12 +15,13 @@ class GameManager:
         
         self.window = pygame.display.set_mode((WindowSettings.width, WindowSettings.height))
         self.player = Player(self.window)
-        self.npc = NPC(NPCSettings.npcstartx, NPCSettings.npcstarty, 'maqix', GamePath.npc, window=self.window, hp=10)
-        self.monster = Monster(MonsterSettings.coordx, MonsterSettings.coordy, 'knight', GamePath.monster, window=self.window, weaponindex=1, hp=50)
-        
+        self.player_sword = self.player.weapon
+        self.collidemanager = Collidable()
         self.gamestate = GameState.GAME_PLAY_WILD
-        self.wild_scene = WildScene(self.window)
+        self.wild_scene = WildScene(self.window, self.player)
         self.wild_scene.gen_WILD()
+        self.wild_scene.gen_npcs()
+        self.wild_scene.gen_monsters()
 
     def game_reset(self):
 
@@ -46,10 +47,13 @@ class GameManager:
         ##### Your Code Here ↑ #####
 
     def update(self):
+        self.event = pygame.event.get()
         key = pygame.key.get_pressed()
-        self.player.update(key)
-        self.monster.update(self.player)
-        self.npc.update()
+        
+        self.player.update(key, self.event)
+        self.wild_scene.update()
+        self.update_collide()
+        
 
     def update_main_menu(self, events):
         ##### Your Code Here ↓ #####
@@ -98,12 +102,12 @@ class GameManager:
 
         # Player -> NPCs; if multiple NPCs collided, only first is accepted and dealt with.
         ##### Your Code Here ↓ #####
-        pass
+        
         ##### Your Code Here ↑ #####
 
         # Player -> Monsters
         ##### Your Code Here ↓ #####
-        pass
+        
         ##### Your Code Here ↑ #####
         
         # Player -> Portals
@@ -117,18 +121,14 @@ class GameManager:
         ##### Your Code Here ↑ #####
 
     def update_NPCs(self):
-        # This is not necessary. If you want to re-use your code you can realize this.
-        ##### Your Code Here ↓ #####
         pass
-        ##### Your Code Here ↑ #####
 
     # Render-relate update functions here ↓
     def render(self):
         
         if self.gamestate == GameState.GAME_PLAY_WILD:
             self.render_wild()
-        self.monster.draw()
-        self.npc.draw()
+        
         self.player.draw()
     
     def render_main_menu(self):

@@ -26,9 +26,9 @@ class PlayerSettings:
     playerMoney = 100
 
 class NPCSettings:
-    npcSpeed = 1
-    npcWidth = 60
-    npcHeight = 60
+    npcSize = {'maqix': (60, 60), 'knight': (60, 60)}
+    npcHP = {'maqix': 10, 'knight': 150}
+    npcSpeed = {"maqix": 1, 'knight': 3}
     npcstartx = WindowSettings.width // 4
     npcstarty = WindowSettings.height // 4 + 80
     talkCD = 30
@@ -39,6 +39,18 @@ class NPCType(Enum):
     DIALOG = 1
     MONSTER = 2
     SHOP = 3
+    KNIGHT = 4
+
+class State(Enum):
+    ALIVE = 1
+    DEAD = 2
+    BURNING = 3
+    FROZEN = 4
+    DIZZY = 5
+    REPELL = 6
+    TALKING = 7
+    STILL = 8
+    ATTACKING = 9
 
 class BossSettings:
     width = 300
@@ -108,7 +120,7 @@ class GamePath:
     mapBlock = r".\assets\background\map.png"
 
     # player/npc related path
-    npc = r".\assets\npc\npc.png"
+    npc = [r".\assets\npc\maqix\1.png"]
     player = [
         r".\assets\player\1.png", 
         r".\assets\player\1.png",
@@ -120,10 +132,16 @@ class GamePath:
         r".\assets\player\4.png", 
         # 8 frames for a single loop of animation looks much better.
     ]
-    monster = r".\assets\npc\monster\1.png"
+
+    knight = [r".\assets\npc\knight\1.png",
+              r".\assets\npc\knight\2.png",
+              r".\assets\npc\knight\3.png",
+              r".\assets\npc\knight\4.png",]
+    
     boss = r".\assets\npc\boss.png"
 
     Sword1 = [f"./assets/weapon/Sword1/sword1-{i}.png" for i in range(1, 7)]
+
 
     groundTiles = [
         r".\assets\tiles\ground1.png", 
@@ -189,8 +207,7 @@ class GameEvent:
     EVENT_SHOP = pygame.USEREVENT + 5
 
 class MonsterSettings:
-    monsterWidth = 60
-    monsterHeight = 60
+    monsterSize = {'knight': (60, 60)}
     coordx = WindowSettings.width // 2 + 80
     coordy = WindowSettings.height // 2
     DetectingRange = 500
@@ -203,8 +220,11 @@ class WeaponSettings:
 
 class SwordSettings:
     cooldown = 10
-    skillmsg = {'cut': 6 , 'longcut': 8, 'spin': 20, 'disappear': 20, 'stab': 8}
-    AS = 2
+    skillmsg = {'cut': [6, (65, 55), (2, 10), 10, 4] ,
+                'longcut': [8, (95, 65), (4, 20), 25, 5], 
+                'spin': [20, (65, 55), (1,10), 10, 0], 
+                'disappear': [20, (65, 55), (1, 30), 0, 0], 
+                'stab': [8, (95, 30), (1, 5), 5, 3]}
 
 class SwordPath:
     cut = [f"./assets/weapon/Sword-cut/sword-{i}.png" for i in range(1, 7)]

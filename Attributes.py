@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+import pygame
 
 class Collidable:
     def __init__(self):
@@ -10,12 +11,17 @@ class Collidable:
             "boss": False, 
         }
         self.collidingObject = {
-            "obstacle": [], 
-            "npc": None, 
-            "monster": None, 
-            "portal": None, 
+            "obstacle": pygame.sprite.Group(), 
+            "npc": pygame.sprite.Group(),
+            "monster": pygame.sprite.Group(), 
+            "portal": pygame.sprite.Group(), 
             "boss": None, 
         }
+        self.boss = None
+        self.click = 0
+        self.isclocking = False
+
+    
     
     def is_colliding(self):
         return (self.collidingWith["obstacle"] or 
@@ -23,3 +29,12 @@ class Collidable:
                 self.collidingWith["monster"] or
                 self.collidingWith["portal"] or 
                 self.collidingWith["boss"])
+
+    def clicktock(self, time):
+        if not self.isclocking:
+            self.isclocking = True
+            self.click = time
+        else:
+            self.click -= 1
+            if self.click == 1:
+                self.isclocking = False    #计时器
