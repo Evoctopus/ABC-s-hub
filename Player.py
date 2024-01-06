@@ -29,10 +29,9 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.dir = 1
         self.is_talking = False
         self.is_jumping = False
-        self.startattack = False
         self.skill = None
         
-        self.weapon = Sword(self.window, self)
+        self.weapon = Sword(self.window, self, f"./assets/weapon/Sword-cut/sword-1.png", 65, 55)
 
     def attr_update(self, addCoins = 0, addHP = 0, addAttack = 0, addDefence = 0):
         ##### Your Code Here ↓ #####
@@ -49,7 +48,7 @@ class Player(pygame.sprite.Sprite, Collidable):
         pass
         ##### Your Code Here ↑ #####
 
-    def update(self, key):
+    def update(self, key, events):
 
         
         if key[pygame.K_d] or key[pygame.K_w] or key[pygame.K_a] or key[pygame.K_s]:
@@ -73,11 +72,21 @@ class Player(pygame.sprite.Sprite, Collidable):
                     self.vert = 10
                     self.is_jumping = False 
             
-            if key[pygame.K_j]:
-                self.skill = 'cut'
-                self.startattack = True
+            if not self.weapon.startattack:
+                if key[pygame.K_j]:
+                    self.skill = 'cut'
+                elif key[pygame.K_k]:
+                    self.skill = 'stab'
+                elif key[pygame.K_l]:
+                    self.skill = 'longcut'
+                elif key[pygame.K_i]:
+                    self.skill = 'spin'
+                elif key[pygame.K_o]:
+                    self.skill = 'disappear'
+                else:
+                    self.skill = None
             else:
-                self.startattack = False
+                self.skill = None
 
             if key[pygame.K_w] and self.rect.top > 0 :
                 dy -= self.speed
