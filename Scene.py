@@ -65,14 +65,21 @@ class Scene():
     def detectnpc(self):
         if pygame.sprite.spritecollide(self.player, self.npcs, False):
             for npc in pygame.sprite.spritecollide(self.player, self.npcs, False):
-                npc.talking = True
-            self.player.talking = True
+                npc.state = State.TALKING
+            self.player.state = State.TALKING
     
     def detectmonster(self):
         object = pygame.sprite.spritecollide(self.playerweapon, self.monsters, False)
         if object and self.playerweapon.attacking:
             for monster in object:
                 monster.beingattacked = True
+    
+    def detectplayer(self):
+        for each in self.monsters:
+            if each.attacking:
+                if each.attacking_method == AttackMethod.WEAPON and pygame.sprite.collide_rect(self.player, each.weapon):
+                    self.player.beingattacked = True
+
 
     def update(self):
         self.detectmonster()
@@ -115,7 +122,7 @@ class WildScene(Scene):
         super().__init__(window, player)
         self.type = SceneType.WILD
 
-    def gen_WILD(self):
+    def gen_Map(self):
         self.map = Maps.gen_wild_map()
         self.obstacles = Maps.gen_wild_obstacle()
 
@@ -123,27 +130,53 @@ class WildScene(Scene):
         self.npcs.add(NPC(NPCSettings.npcstartx, NPCSettings.npcstarty, 'maqix', self.window, self.difficulty, self.player, GamePath.npc))
     
     def gen_monsters(self, num = 10):
-        for i in range(num):
-            coordx = randint(0, SceneSettings.tileXnum - 1) * SceneSettings.tileWidth
-            coordy = randint(0, SceneSettings.tileYnum - 1) * SceneSettings.tileHeight
-            if randint(0, 3) == 0:
-                self.monsters.add(Monster(WindowSettings.width - 50, coordy, 'knight', self.window, self.difficulty, self.player, GamePath.knight))
-            elif randint(0, 3) == 1:
-                self.monsters.add(Monster(0, coordy, 'knight', self.window, self.difficulty, self.player, GamePath.knight))
-            elif randint(0, 3) == 2:
-                self.monsters.add(Monster(coordx, WindowSettings.height - 50, 'knight', self.window, self.difficulty, self.player, GamePath.knight))
-            elif randint(0, 3) == 3:
-                self.monsters.add(Monster(coordx, 0, 'knight', self.window, self.difficulty, self.player, GamePath.knight))
+        self.monsters.add(Knight(WindowSettings.width //2 , WindowSettings.height // 2, 'knight', self.window, self.difficulty, self.player, GamePath.knight))
+            
 
 class CityScene(Scene):
     def __init__(self, window):
         super().__init__(window=window)
         self.type = SceneType.CITY
 
-    def gen_CITY(self):
+    def gen_Map(self):
         ##### Your Code Here ↓ #####
         pass
         ##### Your Code Here ↑ #####
+    
+class LavaScene(Scene):
+    def __init__(self, window):
+        super().__init__(window=window)
+        self.type = SceneType.LAVA
+
+    def gen_Map(self):
+        ##### Your Code Here ↓ #####
+        pass
+        ##### Your Code Here ↑ #####
+
+class IceScene(Scene):
+    def __init__(self, window):
+        super().__init__(window=window)
+        self.type = SceneType.ICE
+
+    def gen_Map(self):
+        ##### Your Code Here ↓ #####
+        pass
+        ##### Your Code Here ↑ #####
+    def gen_npcs(self):
+        self.npcs.add(NPC(NPCSettings.npcstartx, NPCSettings.npcstarty, 'maqix', self.window, self.difficulty, self.player, GamePath.npc))
+
+    def gen_monsters(self, num = 10):
+        for i in range(num):
+            coordx = randint(0, SceneSettings.tileXnum - 1) * SceneSettings.tileWidth
+            coordy = randint(0, SceneSettings.tileYnum - 1) * SceneSettings.tileHeight
+            if randint(0, 3) == 0:
+                self.monsters.add(Knight(WindowSettings.width - 50, coordy, 'knight', self.window, self.difficulty, self.player, GamePath.knight))
+            elif randint(0, 3) == 1:
+                self.monsters.add(Monster(0, coordy, 'knight', self.window, self.difficulty, self.player, GamePath.knight))
+            elif randint(0, 3) == 2:
+                self.monsters.add(Monster(coordx, WindowSettings.height - 50, 'knight', self.window, self.difficulty, self.player, GamePath.knight))
+            elif randint(0, 3) == 3:
+                self.monsters.add(Monster(coordx, 0, 'knight', self.window, self.difficulty, self.player, GamePath.knight))
 
 class BossScene(Scene):
     def __init__(self, window):

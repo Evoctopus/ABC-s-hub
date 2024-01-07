@@ -18,10 +18,10 @@ class GameManager:
         self.player_sword = self.player.weapon
         self.collidemanager = Collidable()
         self.gamestate = GameState.GAME_PLAY_WILD
-        self.wild_scene = WildScene(self.window, self.player)
-        self.wild_scene.gen_WILD()
-        self.wild_scene.gen_npcs()
-        self.wild_scene.gen_monsters()
+        self.scene = WildScene(self.window, self.player)
+        self.scene.gen_Map()
+        self.scene.gen_npcs()
+        self.scene.gen_monsters()
 
     def game_reset(self):
 
@@ -51,7 +51,7 @@ class GameManager:
         key = pygame.key.get_pressed()
         
         self.player.update(key, self.event)
-        self.wild_scene.update()
+        self.scene.update()
         self.update_collide()
         
 
@@ -142,7 +142,7 @@ class GameManager:
         ##### Your Code Here ↑ #####
 
     def render_wild(self):
-        self.wild_scene.render(self.player)
+        self.scene.render(self.player)
 
     def render_boss(self):
         pass

@@ -30,6 +30,21 @@ def gen_wild_map():
     
     return mapObj
 
+def gen_wild_obstacle():
+    image = pygame.image.load(GamePath.tree) 
+
+    obstacles = pygame.sprite.Group()
+    # donot generate in the original position of player
+    # 左上没生成障碍，因为没做npc和障碍的碰撞
+    midx = SceneSettings.tileXnum//2
+    midy = SceneSettings.tileYnum//2
+    for i in range(SceneSettings.tileXnum):
+        for j in range(SceneSettings.tileYnum):
+            # 防止在出生点生成obstacle
+            if random() < SceneSettings.obstacleDensity and not(i < midx and j < midy) and (i not in range(midx-3, midx+3)) and (j not in range(midy-3, midy+3)):
+                obstacles.add(Block(image, SceneSettings.tileWidth * i, SceneSettings.tileHeight * j))
+    return obstacles    
+
 def gen_city_map():
     ##### Your Code Here ↓ #####
     pass
@@ -45,20 +60,7 @@ def gen_city_obstacle():
     pass
     ##### Your Code Here ↑ #####
 
-def gen_wild_obstacle():
-    image = pygame.image.load(GamePath.tree) 
 
-    obstacles = pygame.sprite.Group()
-    # donot generate in the original position of player
-    # 左上没生成障碍，因为没做npc和障碍的碰撞
-    midx = SceneSettings.tileXnum//2
-    midy = SceneSettings.tileYnum//2
-    for i in range(SceneSettings.tileXnum):
-        for j in range(SceneSettings.tileYnum):
-            # 防止在出生点生成obstacle
-            if random() < SceneSettings.obstacleDensity and not(i < midx and j < midy) and (i not in range(midx-3, midx+3)) and (j not in range(midy-3, midy+3)):
-                obstacles.add(Block(image, SceneSettings.tileWidth * i, SceneSettings.tileHeight * j))
-    return obstacles    
 
 def gen_boss_obstacle():
     ##### Your Code Here ↓ #####

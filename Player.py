@@ -15,13 +15,14 @@ class Player(pygame.sprite.Sprite, Collidable):
                             (PlayerSettings.playerWidth, PlayerSettings.playerHeight)) for img in GamePath.player]
         self.window = window
         self.index = 0
-        self.image = self.images[self.index]
+        self.image = self.images[0]
         self.rect = self.image.get_rect()
-        self.weapon = None
         self.hp = 100
         self.hp_coord = 60 / self.hp
         self.speed = 5
         self.tag = 'player'
+        self.state = State.ALIVE
+        self.debuff = []
         
         self.vert = 10
         self.acceleration = -2   #跳跃的相关变量

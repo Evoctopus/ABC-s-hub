@@ -29,6 +29,8 @@ class NPCSettings:
     npcSize = {'maqix': (60, 60), 'knight': (60, 60)}
     npcHP = {'maqix': 10, 'knight': 150}
     npcSpeed = {"maqix": 1, 'knight': 3}
+    npcDefence = {'maqix': 0, 'knight': 5}
+    npcAttack = {'maqix': 900000, 'knight': 10}
     npcstartx = WindowSettings.width // 4
     npcstarty = WindowSettings.height // 4 + 80
     talkCD = 30
@@ -43,14 +45,22 @@ class NPCType(Enum):
 
 class State(Enum):
     ALIVE = 1
-    DEAD = 2
-    BURNING = 3
-    FROZEN = 4
-    DIZZY = 5
-    REPELL = 6
-    TALKING = 7
-    STILL = 8
-    ATTACKING = 9
+    TALKING = 2
+    STILL = 3
+    ATTACKING = 4
+    DEAD = 5
+
+class Debuff(Enum):
+    BURNING = 1
+    FROZEN = 2
+    DIZZY = 3
+    REPELL = 4
+
+class AttackMethod(Enum):
+    WEAPON = 1
+    FIST = 2
+    BULLET = 3
+    SKILL = 4
 
 class BossSettings:
     width = 300
@@ -61,7 +71,9 @@ class BossSettings:
 class SceneType(Enum):
     CITY = 1
     WILD = 2
-    BOSS = 3
+    ICE = 3
+    LAVA = 4
+    BOSS = 5
 
 class DialogSettings:
     boxWidth = 800
@@ -210,7 +222,8 @@ class MonsterSettings:
     monsterSize = {'knight': (60, 60)}
     coordx = WindowSettings.width // 2 + 80
     coordy = WindowSettings.height // 2
-    DetectingRange = 500
+    DetectingRange = {'knight': 500}
+    AttackingRange = {'knight': 70}
 
 class WeaponSettings:
     weaponwidth = [65, 60]
