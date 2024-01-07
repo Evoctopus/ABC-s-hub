@@ -18,7 +18,7 @@ class GameManager:
         self.player_sword = self.player.weapon
         self.collidemanager = Collidable()
         self.gamestate = GameState.GAME_PLAY_WILD
-        self.scene = WildScene(self.window, self.player)
+        self.scene = BossScene(self.window, self.player)
         self.scene.gen_Map()
         self.scene.gen_npcs()
         self.scene.gen_monsters()
@@ -142,7 +142,7 @@ class GameManager:
         ##### Your Code Here ↑ #####
 
     def render_wild(self):
-        self.scene.render(self.player)
+        self.scene.render()
 
     def render_boss(self):
         pass

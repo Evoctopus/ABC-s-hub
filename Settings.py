@@ -26,11 +26,11 @@ class PlayerSettings:
     playerMoney = 100
 
 class NPCSettings:
-    npcSize = {'maqix': (60, 60), 'knight': (60, 60)}
-    npcHP = {'maqix': 10, 'knight': 150}
-    npcSpeed = {"maqix": 1, 'knight': 3}
-    npcDefence = {'maqix': 0, 'knight': 5}
-    npcAttack = {'maqix': 900000, 'knight': 10}
+    npcSize = {'maqix': (60, 60), 'knight': (60, 60), 'demon': (360, 360)}
+    npcHP = {'maqix': 10, 'knight': 150, 'demon': 500}
+    npcSpeed = {"maqix": 1, 'knight': 3, 'demon': 3}
+    npcDefence = {'maqix': 0, 'knight': 5, 'demon': 100}
+    npcAttack = {'maqix': 900000, 'knight': 20, 'demon': 50}
     npcstartx = WindowSettings.width // 4
     npcstarty = WindowSettings.height // 4 + 80
     talkCD = 30
@@ -149,7 +149,8 @@ class GamePath:
               r".\assets\npc\knight\2.png",
               r".\assets\npc\knight\3.png",
               r".\assets\npc\knight\4.png",]
-    
+
+
     boss = r".\assets\npc\boss.png"
 
     Sword1 = [f"./assets/weapon/Sword1/sword1-{i}.png" for i in range(1, 7)]
@@ -194,6 +195,15 @@ class GamePath:
            r".\assets\bgm\wild.mp3",
            r".\assets\bgm\boss.mp3"]
     
+
+class DemonSettings:
+    demonmsg = {'attack': [21], 
+                'hit': [4], 
+                'idle': [15], 
+                'breath': [15], 
+                'dead': [21], 
+                'run': [10]}
+
 
 class PortalSettings:
     width = 320

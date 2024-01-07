@@ -23,6 +23,7 @@ class Weapon(pygame.sprite.Sprite, Collidable):
         self.rect = self.image.get_rect()
 
         self.atk = 0
+        self.hasattacked = False
         self.attacking = False
         self.startattack = False
         self.dir = 1
@@ -33,6 +34,7 @@ class Weapon(pygame.sprite.Sprite, Collidable):
 
     def update(self):
 
+        self.atk *= self.owner.atk
         self.dir = self.owner.dir
         self.handpos = self.owner.rect.centerx - self.dir * self.width // 6, self.owner.rect.centery + 25
         if self.startattack:
@@ -90,7 +92,7 @@ class Sword(Weapon):
         self.msg = SwordSettings.skillmsg[self.skill]
         self.len = self.msg[0]
         self.AS = self.msg[2]
-        self.ATK = self.msg[3]
+        self.ATK = self.msg[3] * self.owner.atk
 
         self.attackingindex = self.msg[4]
         self.images = [pygame.transform.scale(pygame.image.load(f"./assets/weapon/Sword-{self.skill}/sword-{i}.png"), self.msg[1]) 
@@ -110,6 +112,7 @@ class Sword(Weapon):
         self.clicktock(self.AS[1])
         if not self.isclocking:
             self.cooling = False
+            self.hasattacked = False
             
 
     def pos_update(self):

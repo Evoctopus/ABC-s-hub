@@ -7,6 +7,7 @@ from random import randint
 from enum import Enum
 from Settings import *
 from NPCs import *
+from Boss import *
 from PopUpBox import *
 from Portal import *
 from BgmPlayer import *
@@ -76,14 +77,19 @@ class Scene():
     
     def detectplayer(self):
         for each in self.monsters:
-            if each.attacking:
-                if each.attacking_method == AttackMethod.WEAPON and pygame.sprite.collide_rect(self.player, each.weapon):
-                    self.player.beingattacked = True
+            if each.attacking_method == AttackMethod.WEAPON:
+                if each.weapon.attacking and pygame.sprite.collide_rect(self.player, each.weapon):
+                    if not each.weapon.hasattacked:
+                        self.player.beingattacked(each)
+                        each.weapon.hasattacked = True
 
+    def gen_npcs(self):
+        pass
 
     def update(self):
         self.detectmonster()
         self.detectnpc()
+        self.detectplayer()
         for each in self.npcs:
             each.update()
         for each in self.monsters:
@@ -92,7 +98,7 @@ class Scene():
                 self.dead.add(each)
                 self.monsters.remove(each)
 
-    def render(self, player):
+    def render(self):
         for i in range(SceneSettings.tileXnum):
             for j in range(SceneSettings.tileYnum):
                 self.window.blit(self.map[i][j], 
@@ -179,19 +185,36 @@ class IceScene(Scene):
                 self.monsters.add(Monster(coordx, 0, 'knight', self.window, self.difficulty, self.player, GamePath.knight))
 
 class BossScene(Scene):
-    def __init__(self, window):
-        super().__init__(window=window)
-        ##### Your Code Here ↓ #####
-        pass
-        ##### Your Code Here ↑ #####
+    def __init__(self, window, player):
+        super().__init__(window, player)
 
     # Overwrite Scene's function
     def trigger_battle(self, player):
         ##### Your Code Here ↓ #####
         pass
         ##### Your Code Here ↑ #####
+    
+    def gen_Map(self):
+        self.map = Maps.gen_wild_map()
+        self.obstacles = Maps.gen_wild_obstacle()
 
-    def gen_BOSS(self):
-        ##### Your Code Here ↓ #####
-        pass
-        ##### Your Code Here ↑ #####
+    def gen_monsters(self):
+        self.monsters.add(Demon(WindowSettings.width//2-60, 480, self.window, self.player))
+
+    def update(self):
+        self.detectmonster()
+        self.detectplayer()
+        for each in self.monsters:
+            each.update()
+            if each.completelydead:
+                self.monsters.remove(each)
+
+    def render(self):
+
+        for i in range(SceneSettings.tileXnum):
+            for j in range(SceneSettings.tileYnum):
+                self.window.blit(self.map[i][j], 
+                (SceneSettings.tileWidth * i, SceneSettings.tileHeight * j))
+        self.obstacles.draw(self.window)
+        for each in self.monsters:
+            each.draw()

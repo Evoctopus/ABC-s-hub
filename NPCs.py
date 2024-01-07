@@ -36,6 +36,7 @@ class NPC(pygame.sprite.Sprite, Collidable):
         self.weapon = None
         self.attacking_method = None
         self.attacking = False
+        self.hasattacked = False
 
         self.name = name
         self.namefont = pygame.font.Font(None, NPCSettings.Fontsize)
@@ -142,11 +143,11 @@ class Monster(NPC):
         else:
             self.index = (self.index + 0.3) % self.len 
             self.image = self.images[math.floor(self.index)]
-        if not Debuff.DIZZY in self.debuff:
-            if self.dir == -1:
-                self.image = pygame.transform.flip(self.image, True, False)
-            else:
-                self.image = self.image
+       
+        if self.dir == -1:
+            self.image = pygame.transform.flip(self.image, True, False)
+        else:
+            self.image = self.image
         
     def attackimage(self):
         return None
@@ -169,19 +170,24 @@ class Monster(NPC):
                 elif self.player.weapon.skill == 'spin':
                     self.debuff.append(Debuff.DIZZY)
 
+
     def pos_update(self):
 
         self.dis = math.hypot(self.player.rect.centerx - self.rect.centerx, self.player.rect.centery - self.rect.centery)
         if (self.dis <= MonsterSettings.DetectingRange[self.name]) and not Debuff.DIZZY in self.debuff:
             self.startattack = True
         if self.startattack:
-            self.dx, self.dy = ((self.player.rect.centerx - self.rect.centerx) / self.dis * self.speed, 
-                                (self.player.rect.centery - self.rect.centery) / self.dis * self.speed)
+            if self.dis == 0:
+                self.dx, self.dy = 0, 0
+            else:
+                self.dx, self.dy = ((self.player.rect.centerx - self.rect.centerx) / self.dis * self.speed, 
+                                    (self.player.rect.centery - self.rect.centery) / self.dis * self.speed)
             self.attack()    #跟踪玩家
-        if self.player.rect.centerx < self.rect.centerx: 
-            self.dir = -1
-        elif self.player.rect.centerx > self.rect.centerx:
-            self.dir = 1
+        if not Debuff.DIZZY in self.debuff:
+            if self.player.rect.centerx < self.rect.centerx: 
+                self.dir = -1
+            elif self.player.rect.centerx > self.rect.centerx:
+                self.dir = 1
 
 
     def debuff_update(self):
@@ -232,20 +238,6 @@ class Knight(Monster):
         
     def attackimage(self):
         return self.images[0]
-
-
-class Boss(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-        
-        ##### Your Code Here ↓ #####
-        pass
-        ##### Your Code Here ↑ #####
-
-    def draw(self, window, dx=0, dy=0):
-        ##### Your Code Here ↓ #####
-        pass
-        ##### Your Code Here ↑ #####
 
 
 

@@ -19,8 +19,11 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.rect = self.image.get_rect()
         self.hp = 100
         self.hp_coord = 60 / self.hp
-        self.speed = 5
         self.tag = 'player'
+
+        self.speed = 5
+        self.defence = 10
+        self.atk = 10
         self.state = State.ALIVE
         self.debuff = []
         
@@ -51,7 +54,7 @@ class Player(pygame.sprite.Sprite, Collidable):
 
     def update(self, key, events):
 
-        
+        self.state_update()
         if key[pygame.K_d] or key[pygame.K_w] or key[pygame.K_a] or key[pygame.K_s]:
             self.index = (self.index + 1) % len(self.images)
             self.image = self.images[self.index]
@@ -113,8 +116,15 @@ class Player(pygame.sprite.Sprite, Collidable):
                # self.rect = self.rect.move(-dx, -dy)
 
             # 更新角色动画
-            
+    def state_update(self):
+        if self.hp <= 0:
+            self.state = State.DEAD
+
+    def beingattacked(self, object):
+        self.hp -= object.atk - self.defence
+
     def draw(self):
         self.window.blit(self.image, self.rect)
-        pygame.draw.rect(self.window, (255, 0, 0), [self.rect.x, self.rect.y - 10, self.hp*self.hp_coord, 10], 0)
-        self.weapon.draw()
+        if not self.state == State.DEAD:
+            pygame.draw.rect(self.window, (255, 0, 0), [self.rect.x, self.rect.y - 10, self.hp*self.hp_coord, 10], 0)
+            self.weapon.draw()
