@@ -11,6 +11,7 @@ from Boss import *
 from PopUpBox import *
 from Portal import *
 from BgmPlayer import *
+from Monster import *
 
 class Scene():
     def __init__(self, window, player):
@@ -22,6 +23,7 @@ class Scene():
         self.npcs = pygame.sprite.Group()
         self.monsters = pygame.sprite.Group()
         self.portals = pygame.sprite.Group()
+        self.Coin = pygame.sprite.Group()
         self.dead = pygame.sprite.Group()
         self.window = window
         self.difficulty = 1
@@ -97,6 +99,16 @@ class Scene():
             if each.state == State.DEAD:
                 self.dead.add(each)
                 self.monsters.remove(each)
+                for _ in range(each.money[0]):
+                    self.Coin.add(Coin(self.window, self.player, 'goldcoin', randint(1, 360)*math.pi/180, each.rect.center))
+                for _ in range(each.money[1]):
+                    self.Coin.add(Coin(self.window, self.player, 'silvercoin', randint(1, 360)*math.pi/180, each.rect.center)) 
+
+        for each in self.Coin:
+            if not each.disappear:
+                each.update()
+            else:
+                self.Coin.remove(each)
 
     def render(self):
         for i in range(SceneSettings.tileXnum):
@@ -109,6 +121,8 @@ class Scene():
         for each in self.npcs:
             each.draw()
         for each in self.monsters:
+            each.draw()
+        for each in self.Coin:
             each.draw()
         self.portals.draw(self.window)
 

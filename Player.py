@@ -26,6 +26,11 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.atk = 10
         self.state = State.ALIVE
         self.debuff = []
+        self.money = 50
+        self.shieldlevel = 1
+        self.shield = pygame.transform.scale(pygame.image.load(f"./assets/shield/1.png"), (60, 60))
+        self.shield_hp = ShieldSettings.hp[0]
+        self.shield_hp_coord = 60 / self.shield_hp
         
         self.vert = 10
         self.acceleration = -2   #跳跃的相关变量
@@ -37,10 +42,16 @@ class Player(pygame.sprite.Sprite, Collidable):
         
         self.weapon = Sword(self.window, self, f"./assets/weapon/Sword-cut/sword-1.png", 65, 55)
 
-    def attr_update(self, addCoins = 0, addHP = 0, addAttack = 0, addDefence = 0):
-        ##### Your Code Here ↓ #####
-        pass
-        ##### Your Code Here ↑ #####
+    def attr_update(self, addCoins = 0, addHP = 0, addAttack = 0, addDefence = 0, addShield = 0):
+        self.money += addCoins
+        self.hp += addHP
+        self.atk += addAttack
+        self.defence += addDefence
+        if addShield > 0:
+            self.shieldlevel += addShield
+            self.shield = pygame.transform.scale(pygame.image.load(f"./assets/shield/{self.shieldlevel}.png"), (60, 60))
+            self.shield_hp = ShieldSettings.hp[self.shieldlevel - 1]
+            self.shield_hp_coord = 60 / self.shield_hp
 
     def reset_pos(self, x=WindowSettings.width // 2, y=WindowSettings.height // 2):
         ##### Your Code Here ↓ #####
@@ -53,7 +64,7 @@ class Player(pygame.sprite.Sprite, Collidable):
         ##### Your Code Here ↑ #####
 
     def update(self, key, events):
-
+        
         self.state_update()
         if key[pygame.K_d] or key[pygame.K_w] or key[pygame.K_a] or key[pygame.K_s]:
             self.index = (self.index + 1) % len(self.images)
@@ -89,6 +100,10 @@ class Player(pygame.sprite.Sprite, Collidable):
                     self.skill = 'disappear'
                 else:
                     self.skill = None
+                    if key[pygame.K_h] and self.shield_hp > 0:
+                        self.defending = True
+                    else: 
+                        self.defending = False
             else:
                 self.skill = None
 
@@ -121,10 +136,19 @@ class Player(pygame.sprite.Sprite, Collidable):
             self.state = State.DEAD
 
     def beingattacked(self, object):
-        self.hp -= object.atk - self.defence
+        if self.defending:
+            self.hp -= max(object.atk - self.defence - self.shield_hp, 0)
+            self.shield_hp = self.shield_hp - object.atk
+        else:
+            self.hp -= object.atk - self.defence
 
     def draw(self):
+        if not self.defending and not self.state == State.DEAD and self.shield_hp > 0:
+            self.window.blit(self.shield, self.rect)
         self.window.blit(self.image, self.rect)
         if not self.state == State.DEAD:
             pygame.draw.rect(self.window, (255, 0, 0), [self.rect.x, self.rect.y - 10, self.hp*self.hp_coord, 10], 0)
+            pygame.draw.rect(self.window, (230, 230, 230), [self.rect.x, self.rect.y - 20, self.shield_hp*self.shield_hp_coord, 10], 0)
             self.weapon.draw()
+            if self.defending and self.shield_hp > 0:
+                self.window.blit(self.shield, self.rect)

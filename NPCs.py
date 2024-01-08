@@ -1,11 +1,15 @@
 # -*- coding:utf-8 -*-
 
 import pygame
+import math
+from random import randint
+
 
 from Settings import *
 from Attributes import *
 from Weapon import *
-import math
+from Coin import *
+
 
 class NPC(pygame.sprite.Sprite, Collidable):
     def __init__(self, x, y, name, window, difficulty, player, paths):
@@ -17,6 +21,9 @@ class NPC(pygame.sprite.Sprite, Collidable):
         self.size = NPCSettings.npcSize[name]
         self.player = player
         self.dead = pygame.transform.scale(pygame.image.load(f"./assets/npc/{name}/dead.png"), NPCSettings.npcSize[name])
+        self.dizzy = [pygame.transform.scale(pygame.image.load(f"./assets/specialeffect/dizzy/{index}.png"), 
+                                             NPCSettings.npcSize[name]) for index in range(1, 4)]
+        self.dizzy_index = 0
         self.image = self.images[0]
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
@@ -27,6 +34,7 @@ class NPC(pygame.sprite.Sprite, Collidable):
         self.defence = NPCSettings.npcDefence[name] * difficulty
         self.atk = NPCSettings.npcAttack[name] * difficulty
         self.speed = NPCSettings.npcSpeed[name] * difficulty  
+        self.money = (0, 0)  #(gold, silver)
 
         self.coord = 60 / self.hp
         self.window = window
@@ -46,6 +54,7 @@ class NPC(pygame.sprite.Sprite, Collidable):
         self.dir = 1
         self.dx = 0
         self.dy = 0
+       
         self.patrollingRange = 70  # 巡逻范围
        
         self.talkCD = 0
@@ -60,6 +69,7 @@ class NPC(pygame.sprite.Sprite, Collidable):
                 self.image = pygame.transform.flip(self.image, True, False)
             else:
                 self.image = self.image
+           
         else:
             self.pos_update()
             self.image_update()
@@ -121,123 +131,7 @@ class ShopNPC(NPC):
         ##### Your Code Here ↑ #####
     
 
-class Monster(NPC):
-    def __init__(self, x, y, name, window, difficulty, player, paths):
-        super().__init__(x, y, name, window, difficulty, player, paths)
-        
-        self.startattack = False
-        self.beingattacked = False
-        self.check = False
-        self.skill = None
-        self.tag = 'monster'
 
-    def attack(self):
-        pass    
-
-    def image_update(self):
-
-        if not self.startattack or Debuff.DIZZY in self.debuff:
-            self.image = self.images[0]
-        elif self.state == State.ATTACKING:
-            self.image = self.attackimage()
-        else:
-            self.index = (self.index + 0.3) % self.len 
-            self.image = self.images[math.floor(self.index)]
-       
-        if self.dir == -1:
-            self.image = pygame.transform.flip(self.image, True, False)
-        else:
-            self.image = self.image
-        
-    def attackimage(self):
-        return None
-
-    def state_update(self):
-        
-        if self.hp <= 0:
-            self.state = State.DEAD
-        else:
-            self.attacking = self.weapon.attacking
-            if self.check and not self.player.weapon.startattack and not self.player.weapon.cooling:
-                self.check = False
-                self.beingattacked = False
-
-            if self.beingattacked and not self.check:
-                self.check = True
-                self.hp -= self.player.weapon.ATK - self.defence
-                if self.player.weapon.skill == 'stab':
-                    self.debuff.append(Debuff.REPELL)
-                elif self.player.weapon.skill == 'spin':
-                    self.debuff.append(Debuff.DIZZY)
-
-
-    def pos_update(self):
-
-        self.dis = math.hypot(self.player.rect.centerx - self.rect.centerx, self.player.rect.centery - self.rect.centery)
-        if (self.dis <= MonsterSettings.DetectingRange[self.name]) and not Debuff.DIZZY in self.debuff:
-            self.startattack = True
-        if self.startattack:
-            if self.dis == 0:
-                self.dx, self.dy = 0, 0
-            else:
-                self.dx, self.dy = ((self.player.rect.centerx - self.rect.centerx) / self.dis * self.speed, 
-                                    (self.player.rect.centery - self.rect.centery) / self.dis * self.speed)
-            self.attack()    #跟踪玩家
-        if not Debuff.DIZZY in self.debuff:
-            if self.player.rect.centerx < self.rect.centerx: 
-                self.dir = -1
-            elif self.player.rect.centerx > self.rect.centerx:
-                self.dir = 1
-
-
-    def debuff_update(self):
-         
-        if Debuff.REPELL in self.debuff:
-            self.dx = -self.dir * 20
-            self.clicktock(3)
-            if not self.isclocking:
-                self.debuff.remove(Debuff.REPELL)
-        elif Debuff.DIZZY in self.debuff:
-            self.skill = None
-            self.dx = 0
-            self.dy = 0
-            self.clicktock(30)
-            if not self.isclocking:
-                self.debuff.remove(Debuff.DIZZY)
-
-
-    def draw(self):
-        self.window.blit(self.image, self.rect)
-        if self.state != State.DEAD:
-            pygame.draw.rect(self.window, (255, 0, 0), [self.rect.x, self.rect.y - 10, self.hp*self.coord, 10], 0)
-            if self.weapon != None:
-                self.weapon.draw()    
-            self.window.blit(self.namerender, (self.rect.x + self.size[0] // 2 - len(self.name) * 2 , self.rect.y - NPCSettings.Fontsize - 10))
-            
-
-class Knight(Monster):
-    
-    def __init__(self, x, y, name, window, difficulty, player, paths):
-        super().__init__( x, y, name, window, difficulty, player, paths)
-        self.weapon = Sword(self.window, self, f"./assets/weapon/Sword-cut/sword-1.png", 65, 55)
-        self.attacking_method = AttackMethod.WEAPON
-
-    def attack(self):
-        
-        if (self.dis <= MonsterSettings.AttackingRange[self.name] or self.weapon.cooling):
-            self.state = State.ATTACKING
-            self.dx = 0
-            self.dy = 0
-            
-            if not self.weapon.cooling:
-                self.skill = 'cut'
-            else: self.skill = None
-        else:
-            self.state = State.ALIVE
-            self.skill = None   
-        
-    def attackimage(self):
-        return self.images[0]
 
 
 

@@ -18,7 +18,7 @@ class GameManager:
         self.player_sword = self.player.weapon
         self.collidemanager = Collidable()
         self.gamestate = GameState.GAME_PLAY_WILD
-        self.scene = BossScene(self.window, self.player)
+        self.scene = WildScene(self.window, self.player)
         self.scene.gen_Map()
         self.scene.gen_npcs()
         self.scene.gen_monsters()
@@ -47,9 +47,9 @@ class GameManager:
         ##### Your Code Here ↑ #####
 
     def update(self):
-        self.event = pygame.event.get()
+
         key = pygame.key.get_pressed()
-        
+        self.event = pygame.event.get()
         self.player.update(key, self.event)
         self.scene.update()
         self.update_collide()

@@ -194,7 +194,11 @@ class GamePath:
     bgm = [r".\assets\bgm\city.mp3",
            r".\assets\bgm\wild.mp3",
            r".\assets\bgm\boss.mp3"]
-    
+
+class CoinSettings():
+    value = {'goldcoin': 20, 'silvercoin': 50}
+    size = (30, 30)
+
 
 class DemonSettings:
     demonmsg = {'attack': [21], 
@@ -256,4 +260,5 @@ class SwordPath:
     stab = [f"./assets/weapon/Sword-stab/sword-{i}.png" for i in range(1, 9)]
     disappear = [f"./assets/weapon/Sword-disappear/sword-{i}.png" for i in range(1, 21)]
     
-
+class ShieldSettings:
+    hp = [50, 70, 100, 150, 300]
