@@ -7,16 +7,18 @@ from Attributes import *
 from Weapon import *
 
 class Player(pygame.sprite.Sprite, Collidable):
-    def __init__(self, window):
+    def __init__(self, window, bgm):
         # Must initialize everything one by one here
         pygame.sprite.Sprite.__init__(self)
         Collidable.__init__(self)
         self.images = [pygame.transform.scale(pygame.image.load(img), 
                             (PlayerSettings.playerWidth, PlayerSettings.playerHeight)) for img in GamePath.player]
         self.window = window
+        self.bgm = bgm
         self.index = 0
         self.image = self.images[0]
         self.rect = self.image.get_rect()
+        self.dx, self.dy = 0, 0
         self.hp = 100
         self.hp_coord = 60 / self.hp
         self.tag = 'player'
@@ -53,7 +55,7 @@ class Player(pygame.sprite.Sprite, Collidable):
             self.shield_hp = ShieldSettings.hp[self.shieldlevel - 1]
             self.shield_hp_coord = 60 / self.shield_hp
 
-    def reset_pos(self, x=WindowSettings.width // 2, y=WindowSettings.height // 2):
+    def reset_pos(self, scene, x=WindowSettings.width // 2, y=WindowSettings.height // 2):
         ##### Your Code Here ↓ #####
         pass
         ##### Your Code Here ↑ #####
@@ -63,7 +65,7 @@ class Player(pygame.sprite.Sprite, Collidable):
         pass
         ##### Your Code Here ↑ #####
 
-    def update(self, key, events):
+    def update(self, key, slow_key):
         
         self.state_update()
         if key[pygame.K_d] or key[pygame.K_w] or key[pygame.K_a] or key[pygame.K_s]:
@@ -72,16 +74,15 @@ class Player(pygame.sprite.Sprite, Collidable):
         else:
             self.image = self.images[0]
 
-        if self.is_talking:
+        if self.state == State.TALKING:
             # 如果不移动，显示静态图像
             self.index = 0
             self.image = self.images[self.index]
         else:
-            dx = 0
-            dy = 0
+            self.dx, self.dy = 0, 0
             if self.is_jumping:
                 self.image = self.images[0]
-                dy -= self.vert
+                self.dy -= self.vert
                 self.vert += self.acceleration
                 if self.vert < -10:
                     self.vert = 10
@@ -108,19 +109,20 @@ class Player(pygame.sprite.Sprite, Collidable):
                 self.skill = None
 
             if key[pygame.K_w] and self.rect.top > 0 :
-                dy -= self.speed
+                self.dy -= self.speed
             if key[pygame.K_s] and self.rect.bottom < WindowSettings.height:
-                dy += self.speed
+                self.dy += self.speed
             if key[pygame.K_a] and self.rect.left > 0:
-                dx -= self.speed
+                self.dx -= self.speed
                 self.dir = -1
             if key[pygame.K_d] and self.rect.right < WindowSettings.width:
-                dx += self.speed
+                self.dx += self.speed
                 self.dir = 1
             if key[pygame.K_SPACE]:
                 self.is_jumping = True
 
-            self.rect = self.rect.move(dx, dy)
+            if self.state != State.STILL:
+                self.rect = self.rect.move(self.dx, self.dy)
               
         self.weapon.update() 
         if self.dir == -1:

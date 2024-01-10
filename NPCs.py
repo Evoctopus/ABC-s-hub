@@ -12,7 +12,7 @@ from Coin import *
 
 
 class NPC(pygame.sprite.Sprite, Collidable):
-    def __init__(self, x, y, name, window, difficulty, player, paths):
+    def __init__(self, x, y, name, window, difficulty, player, bgm, paths):
         # Initialize father classes
         pygame.sprite.Sprite.__init__(self)
         Collidable.__init__(self)
@@ -28,6 +28,7 @@ class NPC(pygame.sprite.Sprite, Collidable):
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.index = 0
+        self.button_index = 0
         self.len = len(paths)
 
         self.hp = NPCSettings.npcHP[name] * difficulty
@@ -47,8 +48,11 @@ class NPC(pygame.sprite.Sprite, Collidable):
         self.hasattacked = False
 
         self.name = name
+        self.bgm = bgm
         self.namefont = pygame.font.Font(None, NPCSettings.Fontsize)
         self.namerender = self.namefont.render(self.name, True, NPCSettings.namecolor) #显示NPC的名字
+        self.button = [self.namefont.render('<  E  >', False, (255, 255, 255)), self.namefont.render('<    E    >', False, (255, 255, 255))]
+        self.can_talk = False
 
         self.initialPosition = x  # 记录初始位置
         self.dir = 1
@@ -69,7 +73,8 @@ class NPC(pygame.sprite.Sprite, Collidable):
                 self.image = pygame.transform.flip(self.image, True, False)
             else:
                 self.image = self.image
-           
+        elif self.state == State.TALKING:
+            self.image = self.images[0]
         else:
             self.pos_update()
             self.image_update()
@@ -102,15 +107,20 @@ class NPC(pygame.sprite.Sprite, Collidable):
         pass
 
     def draw(self, dx=0, dy=0):
-        self.window.blit(self.namerender, (self.rect.x + self.size[0] // 2 - len(self.name) * 2 , self.rect.y - NPCSettings.Fontsize))
+        if self.can_talk:
+            self.button_index = (self.button_index + 0.1) % 2 
+            self.cur_button = self.button[math.floor(self.button_index)]
+            self.window.blit(self.cur_button, 
+                            (self.rect.centerx - self.cur_button.get_width() / 2, self.rect.centery - 80))
+            
+        self.window.blit(self.namerender, (self.rect.centerx - self.namerender.get_width()/2 , 
+                                           self.rect.y - NPCSettings.Fontsize))
         self.window.blit(self.image, self.rect)
 
 
 class DialogNPC(NPC):
-    def __init__(self, x, y, name, dialog):
-        ##### Your Code Here ↓ #####
-        pass
-        ##### Your Code Here ↑ #####
+    def __init__(self, x, y, name, window, difficulty, player, bgm, paths):
+        super().__init__(x, y, name, window, difficulty, player, bgm, paths)
     
     def update(self, ticks):
         ##### Your Code Here ↓ #####

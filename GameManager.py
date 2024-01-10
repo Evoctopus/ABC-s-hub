@@ -14,13 +14,19 @@ class GameManager:
     def __init__(self):
         
         self.window = pygame.display.set_mode((WindowSettings.width, WindowSettings.height))
-        self.player = Player(self.window)
+        self.gamestate = GameState.GAME_PLAY_WILD
+        self.scenetype = SceneType.WILD
+        self.bgm = BgmPlayer(self.gamestate)
+        self.player = Player(self.window, self.bgm)
         self.player_sword = self.player.weapon
         self.collidemanager = Collidable()
-        self.gamestate = GameState.GAME_PLAY_WILD
-        self.scene = WildScene(self.window, self.player)
+        
+        
+        self.scene = WildScene(self.window, self.player, self.bgm)
+        if self.scenetype == SceneType.WILD:
+            self.bgm.play('wild')
+        
         self.scene.gen_Map()
-        self.scene.gen_npcs()
         self.scene.gen_monsters()
 
     def game_reset(self):
@@ -42,17 +48,30 @@ class GameManager:
 
     # Scene-related update functions here ↓
     def flush_scene(self, GOTO:SceneType):
-        ##### Your Code Here ↓ #####
-        pass
-        ##### Your Code Here ↑ #####
+        self.scenetype = GOTO
+        self.player.reset_pos(self.scenetype)
+        if self.scenetype == SceneType.CITY:
+            self.scene = CityScene(self.window, self.player, self.bgm)
+            self.scene.gen_Map()
+            self.bgm.play('city')
+
 
     def update(self):
+        slow_key = {'E': False, 'W': False, 'S': False}
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_e:
+                    slow_key['E'] = True
+            if event.type == Event.FlushScene:
+                self.flush_scene(event.GOTO)
 
         key = pygame.key.get_pressed()
-        self.event = pygame.event.get()
-        self.player.update(key, self.event)
-        self.scene.update()
+        self.player.update(key, slow_key)
+        self.scene.update(key, slow_key)
         self.update_collide()
+        self.bgm.update()
         
 
     def update_main_menu(self, events):
@@ -126,9 +145,7 @@ class GameManager:
     # Render-relate update functions here ↓
     def render(self):
         
-        if self.gamestate == GameState.GAME_PLAY_WILD:
-            self.render_wild()
-        
+        self.scene.render()
         self.player.draw()
     
     def render_main_menu(self):

@@ -17,39 +17,42 @@ def custom_rotate(surface, angle, center):
 
 window = pygame.display.set_mode((WindowSettings.width, WindowSettings.height))
 
-img = pygame.image.load(GamePath.weapon[0])
+#img = pygame.image.load(GamePath.weapon[0])
 
-rect = img.get_rect()
-img = pygame.transform.scale(img, (70, 20))
-img1 = img
-rect = img.get_rect()
-print(rect.size)
-rect.topleft = (50, 50)
-midbottom = rect.midbottom
-window.blit(img, rect)
-print(midbottom)
-print(rect.topleft)
-center = midbottom
-#img, rect = custom_rotate(img, 90, center)
-angle = -60
-img = pygame.transform.rotate(img, angle)
-rect = img.get_rect()
-rect.midbottom = [midbottom[0] + (35 - math.cos(angle * math.pi / 180)*35), midbottom[1]]
-print(img.get_rect())
+# rect = img.get_rect()
+# img = pygame.transform.scale(img, (70, 20))
+# img1 = img
+# rect = img.get_rect()
+# print(rect.size)
+# rect.topleft = (50, 50)
+# midbottom = rect.midbottom
+# window.blit(img, rect)
+# print(midbottom)
+# print(rect.topleft)
+# center = midbottom
+# #img, rect = custom_rotate(img, 90, center)
+# angle = -60
+# img = pygame.transform.rotate(img, angle)
+# rect = img.get_rect()
+# rect.midbottom = [midbottom[0] + (35 - math.cos(angle * math.pi / 180)*35), midbottom[1]]
+# print(img.get_rect())
 
-print(rect.midbottom)
-print(rect.topleft)
+# print(rect.midbottom)
+# print(rect.topleft)
 pygame.init()
 clock = pygame.time.Clock()
-
+i = 0
 while True:
 
         clock.tick(30)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+                i += 1
+                print(i)
 
-        window.blit(img, rect)
+        #window.blit(img, rect)
         pygame.display.flip()
 
 

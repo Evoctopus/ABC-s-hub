@@ -46,9 +46,8 @@ def gen_wild_obstacle():
     return obstacles    
 
 def gen_city_map():
-    ##### Your Code Here ↓ #####
-    pass
-    ##### Your Code Here ↑ #####
+    return pygame.transform.scale(pygame.image.load(r'.\assets\background\wild.png'), 
+                                  (WindowSettings.width * WindowSettings.outdoorScale, WindowSettings.height * WindowSettings.outdoorScale))
 
 def gen_boss_map():
     ##### Your Code Here ↓ #####

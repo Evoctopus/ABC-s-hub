@@ -11,10 +11,8 @@ def main():
     while True:
 
         clock.tick(30)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-
+       
+        
         manager.update()
         manager.render()
         pygame.display.flip()

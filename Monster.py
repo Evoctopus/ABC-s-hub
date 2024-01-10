@@ -10,8 +10,8 @@ from Weapon import *
 
 
 class Monster(NPC):
-    def __init__(self, x, y, name, window, difficulty, player, paths):
-        super().__init__(x, y, name, window, difficulty, player, paths)
+    def __init__(self, x, y, name, window, difficulty, player, bgm, paths):
+        super().__init__(x, y, name, window, difficulty, player, bgm, paths)
         
         self.startattack = False
         self.beingattacked = False
@@ -64,7 +64,10 @@ class Monster(NPC):
 
         self.dis = math.hypot(self.player.rect.centerx - self.rect.centerx, self.player.rect.centery - self.rect.centery)
         if (self.dis <= MonsterSettings.DetectingRange[self.name]) and not Debuff.DIZZY in self.debuff:
+            if not self.startattack:
+                self.bgm.addsound('roar')
             self.startattack = True
+            
         if self.startattack:
             if self.dis == 0:
                 self.dx, self.dy = 0, 0
@@ -104,13 +107,14 @@ class Monster(NPC):
             pygame.draw.rect(self.window, (255, 0, 0), [self.rect.x, self.rect.y - 10, self.hp*self.coord, 10], 0)
             if self.weapon != None:
                 self.weapon.draw()    
-            self.window.blit(self.namerender, (self.rect.x + self.size[0] // 2 - len(self.name) * 2 , self.rect.y - NPCSettings.Fontsize - 10))
+            self.window.blit(self.namerender, (self.rect.centerx - self.namerender.get_width()/2, 
+                                               self.rect.y - NPCSettings.Fontsize - 10))
             
 
 class Knight(Monster):
     
-    def __init__(self, x, y, name, window, difficulty, player, paths):
-        super().__init__( x, y, name, window, difficulty, player, paths)
+    def __init__(self, x, y, name, window, difficulty, player, bgm, paths):
+        super().__init__( x, y, name, window, difficulty, player, bgm, paths)
         self.weapon = Sword(self.window, self, f"./assets/weapon/Sword-cut/sword-1.png", 65, 55)
         self.attacking_method = AttackMethod.WEAPON
         self.money = (2, 1)

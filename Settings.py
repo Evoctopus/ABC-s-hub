@@ -7,7 +7,7 @@ class WindowSettings:
     name = "Thgink Luos"
     width = 1280
     height = 720
-    outdoorScale = 1.5 # A necessary scale to allow camera movement in outdoor scenes
+    outdoorScale = 2 # A necessary scale to allow camera movement in outdoor scenes
 
 class SceneSettings:
     tileXnum = 48 # 64
@@ -90,6 +90,10 @@ class DialogSettings:
     npcHeight = WindowSettings.height // 3
     npcCoordX = 0
     npcCoordY = WindowSettings.height * 2 // 3 - 20
+
+
+class TextSettings:
+    texts = {'maqix': [['&*DJOfe(*(WIOF))'], ['Matrix, Matrix, Matrix !!'], ['Can you get the charm of Matrix ?']]}
 
 class BattleSettings:
     boxWidth = WindowSettings.width * 3 // 4 
@@ -210,10 +214,12 @@ class DemonSettings:
 
 
 class PortalSettings:
-    width = 320
-    height = 320
+    width = 60
+    height = 60
     coordX = (SceneSettings.tileXnum - 10) * SceneSettings.tileWidth - width / 2
     coordY = (SceneSettings.tileYnum / 2) * SceneSettings.tileHeight - height / 2
+    FontSize = 25
+    ButtonSize = 25
 
 class GameState(Enum):
     MAIN_MENU = 1
@@ -262,3 +268,6 @@ class SwordPath:
     
 class ShieldSettings:
     hp = [50, 70, 100, 150, 300]
+
+class Event:
+    FlushScene = pygame.USEREVENT + 1

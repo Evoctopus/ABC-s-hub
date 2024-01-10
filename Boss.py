@@ -8,11 +8,12 @@ import math
 
 
 class Demon(pygame.sprite.Sprite, Collidable):
-    def __init__(self, x, y, window, player) :
+    def __init__(self, x, y, window, player, bgm) :
         pygame.sprite.Sprite.__init__(self)
         Collidable.__init__(self)
         self.images = [pygame.transform.scale(pygame.image.load(f"./assets/npc/demon/idle/{i}.png"), NPCSettings.npcSize['demon']) 
                        for i in range(1, 15)]
+        self.bgm = bgm
         self.width, self.height = NPCSettings.npcSize['demon']
         self.image = self.images[0]
         self.rect = self.image.get_rect()
