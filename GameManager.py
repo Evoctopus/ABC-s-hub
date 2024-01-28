@@ -52,25 +52,26 @@ class GameManager:
         if self.scenetype == SceneType.WILD:
             self.scene = WildScene(self.window,self.player,self.bgm)
             self.scene.gen_Map()
-            self.bgm.play('wild')
+            self.bgm.stop_bgm()
         if self.scenetype == SceneType.INTRODUCTION:
             self.scene = Introduction(self.window,self.player,self.bgm)
-            self.bgm.play("wild")
+            self.bgm.stop_bgm()
         if self.scenetype == SceneType.ICE:
             self.scene = IceScene(self.window,self.player,self.bgm)
             self.scene.gen_Map()
-            self.bgm.play('city')
+            self.bgm.stop_bgm()
         if self.scenetype == SceneType.LAVA:
             self.scene = LavaScene(self.window,self.player,self.bgm)
             self.scene.gen_Map()
-            self.bgm.play('wild')
+            self.bgm.stop_bgm()
         if self.scenetype == SceneType.BOSS:
             self.scene = BossScene(self.window,self.player,self.bgm)
             self.scene.gen_Map()
             self.bgm.play('boss')
         if self.scenetype == SceneType.END:
             self.scene = EndScene(self.window,self.player,self.bgm)
-            self.bgm.play('boss')
+            self.bgm.stop_bgm()
+  
 
     def update(self):
 

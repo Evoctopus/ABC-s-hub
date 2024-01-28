@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.speed = PlayerSettings.playerSpeed
         self.original_speed = PlayerSettings.playerSpeed
         self.defence = 0.8
-        self.atk = 2
+        self.atk = 200
         self.state = State.ALIVE
         self.money = 500
 
@@ -311,8 +311,9 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.window.blit(pygame.transform.scale(pygame.image.load(r'assets\icon\purse.png'), (60, 60)), (10, 10))
         self.window.blit(self.namefont.render(str(self.money), False, Color.Golden), (95, 20))  #money
 
+        hp_msg = str(math.floor(self.hp)) +' / ' + str(math.floor(self.hp_limit))
         self.window.blit(pygame.transform.scale(pygame.image.load(r'assets\icon\health.png'), (50, 50)), (15, 75))
-        self.window.blit(self.namefont.render(str(math.floor(self.hp)), False, Color.Red), (95, 85)) #hp
+        self.window.blit(self.namefont.render(hp_msg, False, Color.Red), (95, 85)) #hp
 
         if self.ability['disappear']:
             self.window.blit(pygame.transform.scale(pygame.image.load(r'assets\icon\sandglass.png'), (50, 50)), (15, 130))

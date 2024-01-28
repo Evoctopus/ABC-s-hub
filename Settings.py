@@ -74,6 +74,7 @@ class State(Enum):
     SPELL = 8
     FROZEN = 10
     APPEAR = 11
+    COOLING = 12
 
 class Debuff(Enum):
     BURNING = 1
@@ -273,6 +274,7 @@ class GamePath:
             r".\assets\tiles\tree4.png"]
 
     cherry_blossom_tree = [f"./assets/tiles/Redtree{index}.png" for index in range(1, 9)]
+    firework = [f'./assets/background/fireworks/{index}.png' for index in range(1, 130)]
                    
     bgm = [r".\assets\bgm\city.mp3",
            r".\assets\bgm\wild.mp3",

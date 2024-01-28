@@ -194,6 +194,9 @@ class Scene():
                 self.box.buy()
             else:
                 self.can_buy = True
+    
+    def start_battle_music(self):
+        pass
 
     def update(self, key, slow_key):
         self.can_talk = False
@@ -225,6 +228,7 @@ class Scene():
                 pygame.event.post(event)
             elif self.can_start_battle:
                 self.bgm.addsound('bell')
+                self.start_battle_music()
                 self.trigger_battle()
         
         if self.can_renderbox and self.box.npc.type == NPCType.SHOP:
@@ -247,8 +251,9 @@ class Scene():
                         self.Coin.add(Coin(self.window, self.player, 'goldcoin', randint(1, 360)*math.pi/180, self.bgm, each.rect.center))
                     for _ in range(each.money[1]):
                         self.Coin.add(Coin(self.window, self.player, 'silvercoin', randint(1, 360)*math.pi/180, self.bgm, each.rect.center)) 
-        else:
-            self.battling = False
+        elif self.type != SceneType.CITY:
+            self.battling = False 
+            self.bgm.stop_bgm()
             self.player.shield_hp = self.player.shield_hp_limit
 
         for each in self.Coin:
@@ -450,6 +455,9 @@ class WildScene(Scene):
         self.portals.add(Portal(1180, 325, 'direction', self.window, 'THE FALLEN TOWN', SceneType.CITY))
         #self.npcs.add(DialogNPC(NPCSettings.npcstartx, NPCSettings.npcstarty, 'maqix', self.window, self.player, self.bgm, GamePath.npc))
     
+    def start_battle_music(self):
+        self.bgm.play('wild')
+
     def gen_monsters(self, x, y):
         rand_num = randint(0, self.difficulty) % 4
         if rand_num == 0:
@@ -482,6 +490,9 @@ class LavaScene(Scene):
         self.map = Maps.gen_lava_map()
         self.obstacles = Maps.gen_lava_obstacle()
         self.portals.add(Portal(45, 325, 'direction', self.window, 'THE FALLEN TOWN', SceneType.CITY, flip=True))
+    
+    def start_battle_music(self):
+        self.bgm.play('wild')
 
     def gen_monsters(self, x, y):
         rand_num = randint(0, self.difficulty) % 5
@@ -518,6 +529,9 @@ class IceScene(Scene):
         self.map = Maps.gen_ice_map()
         self.obstacles = Maps.gen_ice_obstacle()
         self.portals.add(Portal(605, 45, 'direction', self.window, 'THE FALLEN TOWN', SceneType.CITY))
+    
+    def start_battle_music(self):
+        self.bgm.play('ice')
 
     def gen_monsters(self, x, y):
         rand_num = randint(0, self.difficulty) % 4
@@ -700,6 +714,8 @@ class EndScene(Scene):
         self.bg = pygame.image.load(GamePath.introudction)
         self.bg = pygame.transform.scale(self.bg, (WindowSettings.width,WindowSettings.height))
 
+        self.firework1 = Maps.Fireworks(self.window, WindowSettings.width//4, WindowSettings.height//2)
+        self.firework2 = Maps.Fireworks(self.window, WindowSettings.width//4*3, WindowSettings.height//2)
         self.font =pygame.font.Font(None,MenuSetting.textSize)
 
         self.text = self.font.render("please press E to end",True,(0,0,0))
@@ -723,4 +739,7 @@ class EndScene(Scene):
         self.window.blit(self.words[0],(WindowSettings.width//4 + 80,250))
         for i in range(1,len(self.words)):
             self.window.blit(self.words[i],(407,300 + 30*i))
+        
+        self.firework1.draw()
+        self.firework2.draw()
 

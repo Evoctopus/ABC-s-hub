@@ -216,3 +216,20 @@ class Cherry_blossom_tree(pygame.sprite.Sprite):
         self.index = (self.index + 1) % len(self.images)
         self.image = self.images[self.index]
         self.window.blit(self.image,self.rect)
+
+
+class Fireworks(pygame.sprite.Sprite):
+    def __init__(self, window, x, y) :
+        pygame.sprite.Sprite.__init__(self)
+        self.images = [pygame.transform.scale(pygame.image.load(image),(250,300)) for image in GamePath.firework]
+        self.len = len(self.images)
+        self.image = self.images[0]
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.index = 0
+        self.window = window
+    
+    def draw(self):
+        self.index = (self.index + 1) % self.len
+        self.image = self.images[self.index]
+        self.window.blit(self.image, self.rect)
