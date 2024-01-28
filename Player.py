@@ -59,7 +59,7 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.buff_get = {'REPELL' : True,'DIZZY' : False, 'FROZEN': False, 'BURNING': False}
         self.weapon = Sword(self.window, self, GamePath.Sword, 65, 55, self.bgm)
         
-    def attr_update(self, addCoins = 0, addHP = 0, addAttack = 0, addDefence = 0, addShield = 0, addHP_limit = 0, islottery=False):
+    def attr_update(self, addCoins = 0, addHP = 0, addAttack = 0, addDefence = 0, addShield = 0, addHP_limit = 0, islottery=False, ability=None, buff=None):
         if self.money + addCoins < 0 :
             if self.state == State.DEAD:
                 self.money = 0
@@ -77,6 +77,11 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.hp += addHP
         self.atk += addAttack
         self.defence -= addDefence
+
+        if ability != None:
+            self.ability[ability] = True
+        elif buff != None:
+            self.buff_get[buff] = True
 
         if addDefence > 0 and self.defence <= 0.5:
             self.images = [pygame.transform.scale(pygame.image.load(path), 

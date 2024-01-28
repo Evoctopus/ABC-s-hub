@@ -26,7 +26,7 @@
 ![](assets\npc\glory_goddess\1.png)
 
 **2. blacksmith :**
-**可兑换攻击力（attack）和防御力（denfence）**
+**可兑换攻击力（attack）和防御力（denfence）和盾牌等级**
 ![](assets\npc\blacksmith\1.png)
 
 **3.Monster_Hunter :**
@@ -42,7 +42,15 @@
 - **disappear(O键)：大招，可造成六段伤害**
 
 **4.Special_Merchant :**
-**可兑换BUFF（附加在技能上）**
+**可兑换BUFF（附加在技能上，即兑换BUFF前必须学习其基础技能）**
+
+**cut --> FROZEN**
+
+**stab --> REPELL**
+
+**longcut --> BURNING**
+
+**spin -->  DIZZY**
 ![](assets\npc\Special_Merchant\1.png)
 
 **BUFF**

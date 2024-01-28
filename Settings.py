@@ -72,7 +72,6 @@ class State(Enum):
     HIT = 6
     SUMMON = 7
     SPELL = 8
-    COOLING = 9
     FROZEN = 10
     APPEAR = 11
 
@@ -147,8 +146,8 @@ class Shopingitems:
              "Try Your Luck" : "Coin - 200" , "EXit":" "}
     item2 = {"Learn longcut(U)": "       Coin - 400","Learn spin(O)": "             Coin - 200",
              "Learn disappear(I)": "   Coin - 1500","EXit" : " "}
-    item3 = { "get DIZZY Buff":"Coin - 100" ,
-             "get FROZEN Buff" : "Coin - 100", "get BURNING Buff" : "Coin - 100",
+    item3 = { "get DIZZY Buff ":"Coin - 100" ,
+             "get FROZEN Buff " : "Coin - 100", "get BURNING Buff " : "Coin - 100",
              "EXit" :' '}
 
 class BattleSettings:

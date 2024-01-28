@@ -25,13 +25,7 @@ class DialogBox:
 
         self.bg = pygame.image.load(GamePath.talkbg[0])
         self.bg = pygame.transform.scale(self.bg,(DialogSettings.boxWidth+65,DialogSettings.boxHeight))
-
-
-        
-
         self.npc = npc
-        
-
         self.location = Location
         self.size = Size
         
@@ -74,11 +68,7 @@ class ShoppingBox:
             self.items = Shopingitems.item2
         if npc.name == 'Special_Merchant':
             self.items = Shopingitems.item3
-
-
         self.player = player
-        
-
         self.selectedID = 0
 
     def buy(self):
@@ -89,22 +79,18 @@ class ShoppingBox:
             if self.npc.name == 'glory_goddess' and self.player.hp_limit != self.player.hp:
                 self.player.attr_update(addCoins = -50, addHP = self.player.hp_limit-self.player.hp)
             if self.npc.name == 'Monster_Hunter' and not(self.player.ability['longcut']):
-                self.player.ability['longcut'] = True
-                self.player.attr_update(addCoins = -400)
-            if self.npc.name == 'Special_Merchant' and not(self.player.buff_get['DIZZY']):
-                self.player.buff_get['DIZZY'] = True
-                self.player.attr_update(addCoins = -100)
+                self.player.attr_update(addCoins = -400, ability='longcut')
+            if self.npc.name == 'Special_Merchant' and not(self.player.buff_get['DIZZY']) and self.player.ability['spin']:
+                self.player.attr_update(addCoins = -100, buff='DIZZY')
         elif self.selectedID == 1:
             if self.npc.name == 'blacksmith':
                 self.player.attr_update(addCoins = -350, addDefence = 0.1)
             if self.npc.name == 'glory_goddess':
                 self.player.attr_update(addCoins = -500, addHP_limit = 200, addHP = self.player.hp_limit - self.player.hp + 200)
             if self.npc.name == 'Monster_Hunter'and not(self.player.ability['spin']):
-                self.player.ability['spin'] = True
-                self.player.attr_update(addCoins = -200)
+                self.player.attr_update(addCoins = -200, ability='spin')
             if self.npc.name == 'Special_Merchant' and not(self.player.buff_get['FROZEN']):
-                self.player.buff_get['FROZEN'] = True
-                self.player.attr_update(addCoins = -100)
+                self.player.attr_update(addCoins = -100, buff='FROZEN')
         elif self.selectedID == 2:
             if self.npc.name == 'blacksmith':
                 self.player.attr_update(addCoins = -150, addAttack = random.randint(-2,2), addDefence = random.uniform(-0.2,0.2),islottery = True)
@@ -112,11 +98,9 @@ class ShoppingBox:
                 tem = random.randint(100,200)
                 self.player.attr_update(addCoins = -200, addHP_limit = tem,addHP = self.player.hp_limit +tem -self.player.hp)
             if self.npc.name == 'Monster_Hunter' and not(self.player.ability['disappear']):
-                self.player.ability['disappear'] = True
-                self.player.attr_update(addCoins = -1500)
-            if self.npc.name == "Special_Merchant" and not(self.player.buff_get['BURNING']):
-                self.player.buff_get['BURNING'] = True
-                self.player.attr_update(addCoins = -100)
+                self.player.attr_update(addCoins = -1500, ability='disappear')
+            if self.npc.name == "Special_Merchant" and not(self.player.buff_get['BURNING']) and self.player.ability['longcut']:
+                self.player.attr_update(addCoins = -100, buff='BURNING')
         elif self.selectedID == 3:
             if self.npc.name == "blacksmith":
                 self.player.attr_update(addCoins = -400, addShield = 1)
