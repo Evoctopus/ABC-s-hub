@@ -30,9 +30,9 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.speed = PlayerSettings.playerSpeed
         self.original_speed = PlayerSettings.playerSpeed
         self.defence = 0.8
-        self.atk = 200
+        self.atk = 2
         self.state = State.ALIVE
-        self.money = 500
+        self.money = 5000
 
         self.shieldlevel = 1
         self.shield = pygame.transform.scale(pygame.image.load(f"./assets/shield/1.png"), (60, 60))

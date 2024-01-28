@@ -406,6 +406,8 @@ class FireWorm(Monster):
         for effect in self.effect:
             if isinstance(effect, Explode) and effect.isdisappear():
                 self.completelydead = True
+        if not self.effect and self.state == State.DEAD:
+            self.completelydead = True
 
 class Iceworm(FireWorm):
     def __init__(self, x, y, name, window, difficulty, player, bgm, paths):
