@@ -30,8 +30,6 @@ class Scene():
         self.battling = False
         self.Coin = pygame.sprite.Group()
         self.dead = pygame.sprite.Group()
-        self.house = pygame.sprite.Group()
-        self.special_block = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
         self.window = window
         self.difficulty = 1
@@ -40,6 +38,7 @@ class Scene():
         self.buddha = None
         self.cherry_tree = None
         self.can_buy = False
+        self.complete = False
 
     def trigger_dialog(self, npc):
         self.box = DialogBox(self.window, npc)
@@ -245,13 +244,15 @@ class Scene():
                 if not each.completelydead:
                     each.update()
                 else:
+                    if each.tag == 'elite':
+                        self.complete = True
                     self.dead.add(each)
                     self.monsters.remove(each)
                     for _ in range(each.money[0]):
                         self.Coin.add(Coin(self.window, self.player, 'goldcoin', randint(1, 360)*math.pi/180, self.bgm, each.rect.center))
                     for _ in range(each.money[1]):
                         self.Coin.add(Coin(self.window, self.player, 'silvercoin', randint(1, 360)*math.pi/180, self.bgm, each.rect.center)) 
-        elif self.type != SceneType.CITY:
+        elif self.type == SceneType.WILD or self.type == SceneType.LAVA or self.type == SceneType.ICE :
             self.battling = False 
             self.bgm.stop_bgm()
             self.player.shield_hp = self.player.shield_hp_limit
@@ -421,12 +422,12 @@ class CityScene(Scene):
         self.cherry_tree.rect.topleft = (self.cherry_tree.before_rect[0] - self.cameraX,self.cherry_tree.before_rect[1] - self.cameraY)
     
     def gen_npcs(self):
-        self.npcs.add(ShopNPC(175,250, 'glory_goddess',self.window,self.player,self.bgm,GamePath.glory_goddess,0))
-        self.npcs.add(ShopNPC(525,150,"blacksmith",self.window,self.player,self.bgm,GamePath.Blacksmith,0))
-        self.npcs.add(DialogNPC(275,250,"prophet",self.window,self.player,self.bgm,GamePath.Prophet,0))
-        self.npcs.add(ShopNPC(1600,345,"Monster_Hunter",self.window,self.player,self.bgm,GamePath.Monster_Hunter,0))
-        self.npcs.add(ShopNPC(1450,150,"Special_Merchant" ,self.window,self.player,self.bgm,GamePath.Special_Merchant,0))
-        self.npcs.add(DialogNPC(550,850,"archer" ,self.window,self.player,self.bgm,GamePath.Archer))
+        self.npcs.add(ShopNPC(175,250, 'glory_goddess',self.window,self.player,self.bgm,GamePath.glory_goddess))
+        self.npcs.add(ShopNPC(525,150,"blacksmith",self.window,self.player,self.bgm,GamePath.Blacksmith))
+        self.npcs.add(DialogNPC(275,250,"prophet",self.window,self.player,self.bgm,GamePath.Prophet))
+        self.npcs.add(ShopNPC(1600,345,"Monster_Hunter",self.window,self.player,self.bgm,GamePath.Monster_Hunter))
+        self.npcs.add(ShopNPC(1450,150,"Special_Merchant" ,self.window,self.player,self.bgm,GamePath.Special_Merchant))
+        self.npcs.add(PatrollingNPC(550 ,550, "archer" ,self.window,self.player,self.bgm,GamePath.Archer))
         self.npcs.add(DialogNPC(1350,850,"singer" ,self.window,self.player,self.bgm,GamePath.Singer))
 
     def map_render(self):
@@ -470,7 +471,7 @@ class WildScene(Scene):
             self.monsters.add(Zombie(x, y, 'zombie', self.window, self.difficulty, self.player, self.bgm, MonsterSettings.zombie))
 
     def gen_elite(self):
-        if self.difficulty == 3:
+        if self.difficulty == 3 and not self.complete:
             self.monsters.add(Monk(-150 , WindowSettings.height // 2, 'Monk', self.window, 
                                 self.difficulty, self.player, self.bgm, MonsterSettings.Monk, EliteSetting.Monk))
 
@@ -492,7 +493,7 @@ class LavaScene(Scene):
         self.portals.add(Portal(45, 325, 'direction', self.window, 'THE FALLEN TOWN', SceneType.CITY, flip=True))
     
     def start_battle_music(self):
-        self.bgm.play('wild')
+        self.bgm.play('lava')
 
     def gen_monsters(self, x, y):
         rand_num = randint(0, self.difficulty) % 5
@@ -508,7 +509,7 @@ class LavaScene(Scene):
             self.monsters.add(Wizard(x, y, 'wizard', self.window, self.difficulty, self.player, self.bgm, MonsterSettings.wizard))
 
     def gen_elite(self):
-        if self.difficulty == 4:
+        if self.difficulty == 4 and not self.complete:
             self.monsters.add(Melee(1430 , WindowSettings.height // 2, 'Melee', self.window, 
                                 self.difficulty, self.player, self.bgm, MonsterSettings.Melee, EliteSetting.Melee))
 
@@ -545,7 +546,7 @@ class IceScene(Scene):
             self.monsters.add(Ghour(x, y, 'ghour', self.window, self.difficulty, self.player, self.bgm, MonsterSettings.ghour))
 
     def gen_elite(self):
-        if self.difficulty == 3:
+        if self.difficulty == 3 and not self.complete:
             self.monsters.add(Ninja(WindowSettings.width // 2 , 870, 'Ninja', self.window, 
                                 self.difficulty, self.player, self.bgm, MonsterSettings.Ninja, EliteSetting.Ninja))
 

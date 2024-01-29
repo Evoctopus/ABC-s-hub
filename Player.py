@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.speed = PlayerSettings.playerSpeed
         self.original_speed = PlayerSettings.playerSpeed
         self.defence = 0.8
-        self.atk = 2
+        self.atk = 20000000
         self.state = State.ALIVE
         self.money = 500
 
@@ -56,7 +56,7 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.peace = True
 
         self.ability = {'longcut': False, 'spin' : False, 'disappear' : False}
-        self.buff_get = {'REPELL' : True,'DIZZY' : False, 'FROZEN': False, 'BURNING': False}
+        self.buff_get = {'REPELL' : True, 'DIZZY' : False, 'FROZEN': False, 'BURNING': False}
         self.weapon = Sword(self.window, self, GamePath.Sword, 65, 55, self.bgm)
         
     def attr_update(self, addCoins = 0, addHP = 0, addAttack = 0, addDefence = 0, addShield = 0, addHP_limit = 0, islottery=False, ability=None, buff=None):
@@ -65,7 +65,7 @@ class Player(pygame.sprite.Sprite, Collidable):
                 self.money = 0
             return
         elif self.defence - addDefence < 0.2 or self.shieldlevel +addShield > 6 or (self.atk + addAttack> 10) or self.atk +addAttack < 1 or \
-            self.defence - addDefence > 1:
+            self.defence - addDefence > 1 or self.hp_limit + addHP_limit > 5000 or self.hp_limit + addHP_limit < 300:
             if islottery:
                 self.money += addCoins
                 self.bgm.addsound('shopping')
@@ -87,6 +87,12 @@ class Player(pygame.sprite.Sprite, Collidable):
             self.images = [pygame.transform.scale(pygame.image.load(path), 
                             (PlayerSettings.playerWidth, PlayerSettings.playerHeight)) for path in GamePath.player2]
             self.dead = pygame.transform.scale(pygame.image.load(r'assets\player2\dead.png'), 
+                                (PlayerSettings.playerWidth, PlayerSettings.playerHeight))
+        elif addDefence < 0 and self.defence > 0.5:
+            self.images = [pygame.transform.scale(pygame.image.load(path), 
+                            (PlayerSettings.playerWidth, PlayerSettings.playerHeight)) for path in GamePath.player]
+        
+            self.dead = pygame.transform.scale(pygame.image.load(r'assets\player\dead.png'), 
                                 (PlayerSettings.playerWidth, PlayerSettings.playerHeight))
             
         self.hp_limit += addHP_limit
@@ -266,7 +272,7 @@ class Player(pygame.sprite.Sprite, Collidable):
 
     def beingattacked(self, atk, buff):
         
-        if not self.dodge or self.dodge_cd > 5:
+        if (not self.dodge or self.dodge_cd > 5) and self.state != State.DEAD:
             if self.defending:
                 self.hp -= max(atk * self.defence - self.shield_hp, 0)
                 self.shield_hp = self.shield_hp - atk * self.defence
@@ -305,7 +311,6 @@ class Player(pygame.sprite.Sprite, Collidable):
                     effect.draw()
 
         self.render_attr()
-    
     
     def render_attr(self):
         self.window.blit(pygame.transform.scale(pygame.image.load(r'assets\icon\purse.png'), (60, 60)), (10, 10))

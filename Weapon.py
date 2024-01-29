@@ -107,8 +107,6 @@ class Claw(Weapon):
                 self.hasattacked = False
                 self.skill = None
                 self.cooling = True
-        else:
-            self.index = 0
         if self.dir == -1:
             self.image = pygame.transform.flip(self.image, True, False)
         else:

@@ -140,9 +140,8 @@ class Monster(NPC):
                 self.previous_state = self.state
             self.images = self.stillimage()
         elif state == State.HIT:
-            if self.state != State.ATTACKING and self.state != State.FROZEN and self.state != State.STILL and self.state != State.HIT:
-                self.images = self.hitimage()
-                self.previous_state = self.state
+            self.images = self.hitimage()
+            self.previous_state = self.state
         elif state == State.ALIVE:
             self.images = self.moveimage()
         elif state == State.DEAD:
@@ -181,12 +180,11 @@ class Monster(NPC):
         pass
 
     def beingattacked(self, atk, buff):
-
         self.hp -= atk * self.defence
         if self.hp <= 0 :
             self.ChangeActionTo(State.DEAD)
         elif self.state != State.SUMMON and self.state != State.SPELL:
-            if self.state != State.STILL and self.state != State.FROZEN:
+            if self.state != State.STILL and self.state != State.FROZEN and self.state != State.ATTACKING and self.state != State.HIT: 
                 self.ChangeActionTo(State.HIT)
             for debuff in buff:
                 if not debuff in self.debuff:
@@ -325,7 +323,6 @@ class Knight(Monster):
 
     def attack(self):
         self.skill = 'cut'
-        self.weapon.startattack = True
         
     def is_attack_over(self):
         if not self.weapon.startattack:
@@ -362,7 +359,6 @@ class Zombie(Knight):
     
     def attack(self):
         self.skill = 'cut'
-        self.weapon.startattack = True
         self.can_draw_weapon = True
         
     def is_attack_over(self):

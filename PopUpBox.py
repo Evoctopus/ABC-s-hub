@@ -59,9 +59,7 @@ class ShoppingBox:
         
         self.npc = npc
         if npc.name == 'blacksmith':
-            
-            self.items = Shopingitems.items
-            
+            self.items = Shopingitems.items   
         if npc.name == 'glory_goddess':
             self.items = Shopingitems.item1
         if npc.name == 'Monster_Hunter':
@@ -95,7 +93,7 @@ class ShoppingBox:
             if self.npc.name == 'blacksmith':
                 self.player.attr_update(addCoins = -150, addAttack = random.randint(-2,2), addDefence = random.uniform(-0.2,0.2),islottery = True)
             if self.npc.name == 'glory_goddess':
-                tem = random.randint(100,200)
+                tem = random.randint(-200,200)
                 self.player.attr_update(addCoins = -200, addHP_limit = tem,addHP = self.player.hp_limit +tem -self.player.hp)
             if self.npc.name == 'Monster_Hunter' and not(self.player.ability['disappear']):
                 self.player.attr_update(addCoins = -1500, ability='disappear')

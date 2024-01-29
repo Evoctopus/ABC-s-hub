@@ -23,7 +23,7 @@ class Coin(pygame.sprite.Sprite, Collidable):
         self.index = 0
         self.angle = angle
         self.player = player
-        self.speed = randint(10,15)
+        self.speed = randint(20, 25)
         self.disappear = False
         self.hasspill = False
         self.spilltime = 15

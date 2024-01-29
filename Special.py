@@ -143,7 +143,6 @@ class Flame(Buff):
             return False
 
 
-
 class Frozen(Buff):
     def __init__(self, owner, window, bgm, paths, time, proportion=1):
         super().__init__(owner, window, bgm, paths, proportion)

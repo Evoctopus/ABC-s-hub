@@ -70,7 +70,7 @@ class GameManager:
             self.bgm.play('boss')
         if self.scenetype == SceneType.END:
             self.scene = EndScene(self.window,self.player,self.bgm)
-            self.bgm.stop_bgm()
+            self.bgm.play('victory')
   
 
     def update(self):

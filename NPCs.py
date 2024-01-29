@@ -25,7 +25,8 @@ class NPC(pygame.sprite.Sprite, Collidable):
 
         self.image = self.images[0]
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
+        self.rect.center = x, y
+        self.dx, self.dy = 0, 0
         self.index = 0
         self.state = State.ALIVE
         self.len = len(self.images)
@@ -36,6 +37,7 @@ class NPC(pygame.sprite.Sprite, Collidable):
         self.dir = 1
 
     def update(self):
+        
         self.dx, self.dy = 0, 0
         self.state_update()
         if self.state == State.TALKING or self.state == State.STILL:
@@ -43,15 +45,12 @@ class NPC(pygame.sprite.Sprite, Collidable):
         else:
             self.pos_update()
             self.image_update()
-            self.rect = self.rect.move(self.dx, self.dy) 
-
+            
     def image_update(self):
-        self.index = (self.index + 0.01) % self.len 
+        self.index = (self.index + 0.2) % self.len 
         self.image = self.images[math.floor(self.index)]
         if self.dir == -1:
             self.image = pygame.transform.flip(self.image, True, False)
-        else:
-            self.image = self.image
 
     def pos_update(self):
         pass
@@ -66,21 +65,20 @@ class NPC(pygame.sprite.Sprite, Collidable):
         self.window.blit(self.image, self.rect)
     
     def draw_button(self):
-        pass
+        if self.can_talk:
+            self.button_index = (self.button_index + 0.01) % 2 
+            self.cur_button = self.button[math.floor(self.button_index)]
+            self.window.blit(self.cur_button, 
+                            (self.rect.centerx - self.cur_button.get_width() / 2, self.rect.centery - 80))
 
 class DialogNPC(NPC):
-    def __init__(self, x, y, name, window, player, bgm, paths, patrollingRange=70):
+    def __init__(self, x, y, name, window, player, bgm, paths):
         super().__init__(x, y, name, window, player, bgm, paths)
         self.type = NPCType.DIALOG
         self.button_index = 0
         self.button = [self.namefont.render('<  E  >', False, (255, 255, 255)), self.namefont.render('<    E    >', False, (255, 255, 255))]
         self.can_talk = False
-        self.patrollingRange = patrollingRange
         self.before_rect = (x, y)
-        self.speed = 3
-
-    def pos_update(self):
-        pass
 
     def draw_button(self):
          if self.can_talk:
@@ -88,10 +86,23 @@ class DialogNPC(NPC):
             self.cur_button = self.button[math.floor(self.button_index)]
             self.window.blit(self.cur_button, 
                             (self.rect.centerx - self.cur_button.get_width() / 2, self.rect.centery - 80))
-            
-    def reset_talkCD(self):
-        self.talkCD = NPCSettings.talkCD
+
+class PatrollingNPC(DialogNPC):
+
+    def __init__(self, x, y, name, window, player, bgm, paths, patrollingrange=80):
+        super().__init__(x, y, name, window, player, bgm, paths)
+        self.patrollingRange = patrollingrange
+        self.speed = 3
+        self.initial = (x, y)
         
+    def pos_update(self):
+        
+        if abs(self.before_rect[0] - self.initial[0]) > self.patrollingRange-5:
+            self.dir *= -1
+        self.dx = self.speed * self.dir
+        self.before_rect = (self.before_rect[0] + self.dx, self.before_rect[1] + self.dy)
+        
+
 class ShopNPC(NPC):
     def __init__(self, x, y, name, window, player, bgm, paths, patrollingRange=70):
         super().__init__(x, y, name, window, player, bgm, paths)
@@ -102,12 +113,7 @@ class ShopNPC(NPC):
         self.patrollingRange = patrollingRange
         self.before_rect = (x, y)
     
-    def draw_button(self):
-        if self.can_talk:
-            self.button_index = (self.button_index + 0.01) % 2 
-            self.cur_button = self.button[math.floor(self.button_index)]
-            self.window.blit(self.cur_button, 
-                            (self.rect.centerx - self.cur_button.get_width() / 2, self.rect.centery - 80))
+
 
 
     
