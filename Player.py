@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.speed = PlayerSettings.playerSpeed
         self.original_speed = PlayerSettings.playerSpeed
         self.defence = 0.8
-        self.atk = 20000000
+        self.atk = 2
         self.state = State.ALIVE
         self.money = 500
 
@@ -64,7 +64,7 @@ class Player(pygame.sprite.Sprite, Collidable):
             if self.state == State.DEAD:
                 self.money = 0
             return
-        elif self.defence - addDefence < 0.2 or self.shieldlevel +addShield > 6 or (self.atk + addAttack> 10) or self.atk +addAttack < 1 or \
+        elif self.defence - addDefence < 0.2 or self.shieldlevel + addShield > 6 or (self.atk + addAttack> 15) or self.atk +addAttack < 1 or \
             self.defence - addDefence > 1 or self.hp_limit + addHP_limit > 5000 or self.hp_limit + addHP_limit < 300:
             if islottery:
                 self.money += addCoins
@@ -74,9 +74,9 @@ class Player(pygame.sprite.Sprite, Collidable):
             self.bgm.addsound('shopping') 
 
         self.money += addCoins
-        self.hp += addHP
+        
         self.atk += addAttack
-        self.defence -= addDefence
+        self.defence = format(self.defence - addDefence,'.1f')
 
         if ability != None:
             self.ability[ability] = True
@@ -94,8 +94,9 @@ class Player(pygame.sprite.Sprite, Collidable):
         
             self.dead = pygame.transform.scale(pygame.image.load(r'assets\player\dead.png'), 
                                 (PlayerSettings.playerWidth, PlayerSettings.playerHeight))
-            
-        self.hp_limit += addHP_limit
+        
+        self.hp = math.floor(self.hp + addHP)
+        self.hp_limit = math.floor(addHP_limit + self.hp_limit)
         if addShield > 0:
             self.shieldlevel += addShield
             self.shield = pygame.transform.scale(pygame.image.load(f"./assets/shield/{self.shieldlevel}.png"), (60, 60))
@@ -316,7 +317,7 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.window.blit(pygame.transform.scale(pygame.image.load(r'assets\icon\purse.png'), (60, 60)), (10, 10))
         self.window.blit(self.namefont.render(str(self.money), False, Color.Golden), (95, 20))  #money
 
-        hp_msg = str(math.floor(self.hp)) +' / ' + str(math.floor(self.hp_limit))
+        hp_msg = str(self.hp) +' / ' + str(self.hp_limit)
         self.window.blit(pygame.transform.scale(pygame.image.load(r'assets\icon\health.png'), (50, 50)), (15, 75))
         self.window.blit(self.namefont.render(hp_msg, False, Color.Red), (95, 85)) #hp
 

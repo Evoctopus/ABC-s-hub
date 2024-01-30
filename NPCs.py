@@ -89,7 +89,7 @@ class DialogNPC(NPC):
 
 class PatrollingNPC(DialogNPC):
 
-    def __init__(self, x, y, name, window, player, bgm, paths, patrollingrange=80):
+    def __init__(self, x, y, name, window, player, bgm, paths, patrollingrange=150):
         super().__init__(x, y, name, window, player, bgm, paths)
         self.patrollingRange = patrollingrange
         self.speed = 3
@@ -97,7 +97,7 @@ class PatrollingNPC(DialogNPC):
         
     def pos_update(self):
         
-        if abs(self.before_rect[0] - self.initial[0]) > self.patrollingRange-5:
+        if abs(self.before_rect[0] - self.initial[0]) > self.patrollingRange:
             self.dir *= -1
         self.dx = self.speed * self.dir
         self.before_rect = (self.before_rect[0] + self.dx, self.before_rect[1] + self.dy)
