@@ -64,7 +64,7 @@ class Player(pygame.sprite.Sprite, Collidable):
             if self.state == State.DEAD:
                 self.money = 0
             return
-        elif self.defence - addDefence < 0.2 or self.shieldlevel + addShield > 6 or (self.atk + addAttack> 15) or self.atk +addAttack < 1 or \
+        elif self.defence - addDefence <= 0.15 or self.shieldlevel + addShield > 6 or (self.atk + addAttack> 15) or self.atk +addAttack < 1 or \
             self.defence - addDefence > 1 or self.hp_limit + addHP_limit > 5000 or self.hp_limit + addHP_limit < 300:
             if islottery:
                 self.money += addCoins
@@ -76,7 +76,7 @@ class Player(pygame.sprite.Sprite, Collidable):
         self.money += addCoins
         
         self.atk += addAttack
-        self.defence = format(self.defence - addDefence,'.1f')
+        self.defence -= addDefence
 
         if ability != None:
             self.ability[ability] = True
@@ -275,10 +275,10 @@ class Player(pygame.sprite.Sprite, Collidable):
         
         if (not self.dodge or self.dodge_cd > 5) and self.state != State.DEAD:
             if self.defending:
-                self.hp -= max(atk * self.defence - self.shield_hp, 0)
+                self.hp -= math.floor(max(atk * self.defence - self.shield_hp, 0))
                 self.shield_hp = self.shield_hp - atk * self.defence
             else:
-                self.hp -= atk * self.defence
+                self.hp -= math.floor(atk * self.defence)
                 self.bgm.addsound('hurt')
                 for debuff in buff:
                     if not debuff in self.debuff:
@@ -316,7 +316,6 @@ class Player(pygame.sprite.Sprite, Collidable):
     def render_attr(self):
         self.window.blit(pygame.transform.scale(pygame.image.load(r'assets\icon\purse.png'), (60, 60)), (10, 10))
         self.window.blit(self.namefont.render(str(self.money), False, Color.Golden), (95, 20))  #money
-
         hp_msg = str(self.hp) +' / ' + str(self.hp_limit)
         self.window.blit(pygame.transform.scale(pygame.image.load(r'assets\icon\health.png'), (50, 50)), (15, 75))
         self.window.blit(self.namefont.render(hp_msg, False, Color.Red), (95, 85)) #hp

@@ -122,7 +122,7 @@ class ShoppingBox:
         texts = ["Shieldlevel: "  + str(self.player.shieldlevel),
                  "HP_Limit: " + str(self.player.hp_limit),
                  "Attack: " + str(self.player.atk),
-                 "Defence: " + str(self.player.defence)]
+                 "Defence: " + format(self.player.defence, '.1f')]
         
         offset = 0
         for text in texts:
